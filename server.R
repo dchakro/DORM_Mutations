@@ -1,6 +1,8 @@
 # Load the ggplot2 package which provides
 # the 'mpg' dataset.
-library(ggplot2)
+# library(ggplot2)
+library(shiny)
+library(shinythemes)
 
 DF <- readRDS("20200703.FrequencyByResidue.RDS")
 DF <- DF[1:10000,]
@@ -30,4 +32,8 @@ function(input, output,session) {
   ))
   # Add download button to filtered datatable()
   # https://stackoverflow.com/questions/41597062/r-download-filtered-datatable
+  session$onSessionEnded(function() {
+        gc()
+        stopApp()
+      })
 }
