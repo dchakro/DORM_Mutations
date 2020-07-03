@@ -26,7 +26,7 @@ function(input, output,session) {
     DT::datatable(
       data <- DF,
       options = list(lengthMenu = c(5, 10, 50, 100, 200), 
-                     pageLength = 50 ,
+                     pageLength = 10 ,
                      columnDefs = list(list(width = '120px', targets = c(0)))),
       rownames = FALSE 
   ))

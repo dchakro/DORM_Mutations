@@ -23,9 +23,9 @@ fluidPage(
        '- the Catalogue Of Somatic Mutations In Cancer, which is the world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
     ),
     
-    p('Try searching for:', strong(span("BRAF",style='color:#467FAC')), '/' ,
-    strong(span("KRAS G12",style='color:#467FAC')), '/' ,
-    strong(span("lung",style='color:#467FAC'))
+    p('Try searching for:', strong(span("BRAF",style='color:#00abea')), '/' ,
+    strong(span("KRAS G12",style='color:#00abea')), '/' ,
+    strong(span("lung",style='color:#00abea'))
     ,align="right"),
 	# HTML(paste0('<center><img src="',normalizePath("Hotspot_resize.jpg"), 'width="500"></center>')),
 	# Create a new row for the table.
@@ -33,14 +33,14 @@ fluidPage(
                     .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
                     color: #000000;
                     }
-###To change text and background color of the `Search` box ###
+    ###To change text and background color of the `Search` box ###
                     .dataTables_filter input {
                             color: #0E334A;
                             background-color: #FFFFFF
                            }
 
                     thead {
-                    color: #467FAC;
+                    color: #00abea;
                     }
 
                      tbody {
