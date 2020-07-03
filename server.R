@@ -1,9 +1,8 @@
 # Load the ggplot2 package which provides
 # the 'mpg' dataset.
 library(ggplot2)
-source('~/OneDrive - O365 Turun yliopisto/Git/Others_Cloned/github_retrography/parallelRDS.R')
 
-DF <- readRDS.gz("20200703.FrequencyByResidue.RDS")
+DF <- readRDS("20200703.FrequencyByResidue.RDS")
 DF <- DF[1:10000,]
 colnames(DF)[1] <- "Gene Residue"
 colnames(DF)[2]  <- "Total Cases"
