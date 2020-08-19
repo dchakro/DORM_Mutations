@@ -1,7 +1,7 @@
 library(shiny)
 library(shinythemes)
 
-DF <- readRDS("20200706.FrequencyByResidue.RDS")
+DF <- readRDS("20200819.FrequencyByMutation.RDS")
 colnames(DF)[3]  <- "Total Cases"
 colnames(DF)[4] <- "Number of mutations in different tissues"
 

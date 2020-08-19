@@ -5,17 +5,19 @@ library(shiny)
 library(shinythemes)
 
 fluidPage(
-	theme = shinytheme("cerulean"),
+	theme = shinytheme("united"),
 # 	titlePanel(
 # 	h1("Frequency of Mutations per residue - COSMIC v91", align = "center")),
-	titlePanel("Frequency of Mutations per residue - COSMIC v91"),
+	titlePanel(title="",windowTitle = "Hotspot Mutations"),
+  h1(id="pageTitle","Frequency of Mutations in COSMIC v91"),
+   tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	p('This website sources data from', 
 		a(href="https://cosmic-blog.sanger.ac.uk/cosmic-release-v91/",
 		'COSMIC database'),
-		'(v91, released 2020/04/07) and presents the frequency of somatic mutations across different genes grouped by the amino acid residue.'
+		'(v91, released 2020/04/07) and presents the frequency of somatic mutations in different genes.'
 	),
     
-    div(img(src ="https://seafile.utu.fi/f/c6df0c10da3a401f92df/?dl=1" ,width= 500), style="text-align: center;"),
+    div(img(src ="https://seafile.utu.fi/f/f4dd49edfe4b404d8a7e/?dl=1" ,width= 500), style="text-align: center;"),
     
     p('Visit ',
        a(href="https://cancer.sanger.ac.uk/cosmic",
@@ -23,9 +25,9 @@ fluidPage(
        '- the Catalogue Of Somatic Mutations In Cancer, which is the world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
     ),
     
-    p('Try searching for:', strong(span("BRAF",style='color:#00abea')), '/' ,
-    strong(span("KRAS G12",style='color:#00abea')), '/' ,
-    strong(span("lung",style='color:#00abea'))
+    p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
+    strong(span("KRAS G12C",style='color:#ff5e19')), '/' ,
+    strong(span("lung",style='color:#ff5e19'))
     ,align="right"),
 	# HTML(paste0('<center><img src="',normalizePath("Hotspot_resize.jpg"), 'width="500"></center>')),
 	# Create a new row for the table.
@@ -40,7 +42,7 @@ fluidPage(
                            }
 
                     thead {
-                    color: #00abea;
+                    color: #ff5e19;
                     }
 
                      tbody {
