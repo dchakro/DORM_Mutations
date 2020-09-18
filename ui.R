@@ -1,5 +1,3 @@
-# Load the ggplot2 package which provides
-# the 'mpg' dataset.
 library(ggplot2)
 library(shiny)
 library(shinythemes)
@@ -7,8 +5,6 @@ library(shinyWidgets)
 
 fluidPage(
 	theme = shinytheme("united"),
-# 	titlePanel(
-# 	h1("Frequency of Mutations per residue - COSMIC v91", align = "center")),
 	titlePanel(title="",windowTitle = "Hotspot Mutations"),
   h1(id="pageTitle","Frequency of Mutations in COSMIC v91"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
@@ -48,8 +44,6 @@ fluidPage(
                    width = "120")
                )
         ),
-  # verbatimTextOutput("options"),
-  # DT::dataTableOutput("table"),
   tableOutput("table"),
 	p('Note: NS = Not specified')
   
