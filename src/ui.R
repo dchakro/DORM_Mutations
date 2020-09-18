@@ -3,7 +3,8 @@
 library(ggplot2)
 library(shiny)
 library(shinythemes)
-Tissues <- readRDS("TissueTypes.RDS")
+library(shinyWidgets)
+
 fluidPage(
 	theme = shinytheme("united"),
 # 	titlePanel(
@@ -21,17 +22,22 @@ fluidPage(
        'COSMIC'),
        '- the Catalogue Of Somatic Mutations In Cancer, which is the world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
     ),
-    
+    plotOutput('plot'),
     p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
     strong(span("KRAS G12C",style='color:#ff5e19')), '/' ,
     strong(span("lung",style='color:#ff5e19'))
     ,align="right"),
-  selectizeInput('TissueTypes', 'Available tissue types:', choices = Tissues, selected = "", multiple=TRUE, options = list(
-    placeholder = 'Select Tissues',
-    maxItems=5, 
-    'plugins' = list('remove_button'))),
+    searchInput(
+        inputId = "Search",
+        label = "Search :",
+        value="*",
+        placeholder = "Search term",
+        btnSearch = icon("search"),
+        btnReset = icon("remove"),
+        width = "35%"
+    ),
   verbatimTextOutput("options"),
-  verbatimTextOutput("dim"),
+  # verbatimTextOutput("dim"),
   DT::dataTableOutput("table"),
 	p('Note: NS = Not specified')
   

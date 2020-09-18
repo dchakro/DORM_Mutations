@@ -1,5 +1,5 @@
 rm(list=ls())
-DF <- readRDS("20200819.FrequencyByMutation.RDS")
+DF <- readRDS("../data/20200819.FrequencyByMutation.RDS")
 
 Tissue <- sort(unique(gsub(pattern = "^[[:space:]]",
                            replacement = "",
@@ -16,7 +16,7 @@ Tissue <- sort(unique(gsub(pattern = "^[[:space:]]",
 )
 )
 
-# saveRDS(object = Tissue,file = "TissueTypes.RDS",compress = T)
+# saveRDS(object = Tissue,file = "../data/TissueTypes.RDS",compress = T)
 
 DF$mutID <- paste0(DF$Gene,"_",DF$Mutation)
 
