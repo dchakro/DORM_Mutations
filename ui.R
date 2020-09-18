@@ -27,21 +27,27 @@ fluidPage(
     strong(span("KRAS G12C",style='color:#ff5e19')), '/' ,
     strong(span("lung",style='color:#ff5e19'))
     ,align="left"),
-    searchInput(
-      inputId = "Search",
-      label = "Enter search term(s):",
-      value="",
-      placeholder = "KRAS G12",
-      btnSearch = icon("search"),
-      btnReset = icon("remove"),
-      width = "35%"),
-    selectInput("size",
-               "Select plot size:",
-               c(10,50,100,500,1000,"all"),
-               selected = "100",
-               multiple = F,
-               selectize = F,
-               width = "100"),
+    fluidRow(
+        column(4,
+               searchInput(
+                  inputId = "Search",
+                  label = "Type search term(s):",
+                  value="",
+                  placeholder = "KRAS G12",
+                  btnSearch = icon("search"),
+                  btnReset = icon("remove"),
+                  width = "100%")
+        ),
+        column(4,
+                selectInput("size",
+                   "Select plot size:",
+                   c(10,50,100,500,1000,"all"),
+                   selected = "100",
+                   multiple = F,
+                   selectize = F,
+                   width = "120")
+               )
+        ),
   # verbatimTextOutput("options"),
   # DT::dataTableOutput("table"),
   tableOutput("table"),
