@@ -16,7 +16,7 @@ Tissue <- sort(unique(gsub(pattern = "^[[:space:]]",
 )
 )
 
-saveRDS(object = Tissue,file = "TissueTypes.RDS",compress = T)
+# saveRDS(object = Tissue,file = "TissueTypes.RDS",compress = T)
 
 DF$mutID <- paste0(DF$Gene,"_",DF$Mutation)
 
