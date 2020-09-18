@@ -18,15 +18,15 @@ library(shinythemes)
 # colnames(DF)[3]  <- "Total Cases"
 # colnames(DF)[4] <- "Number of mutations in different tissues"
 function(input, output,session) {
-  observeEvent(input$Search,{
+  observeEvent(input$RunSearch,{
     searchTerm <- input$Search
+    plotSize <- input$size
     output$options <- renderPrint(input$Search)
-    if(searchTerm == "*"){
+    if(searchTerm == ""){
       command <- ""
-      DF <- data.frame(vroom::vroom("../data/Table.csv",delim = ";",n_max = 100,col_names = readLines("../data/ColumnNames.txt")),stringsAsFactors = F)
+      DF <- data.frame(vroom::vroom("../data/Table.csv",delim = ";",col_names = readLines("../data/ColumnNames.txt")),stringsAsFactors = F)
       output$table <- DT::renderDataTable(DT::datatable(data = DF, options(list(rownames = FALSE))))
-      # system(command = "rm ../tmp/tmp.csv",intern = F)
-      output$plot <- renderPlot({barplot(DF$counts,xlab = "Mutations",ylab="Frequency",col = "#ff5e19")})
+      output$plot <- renderPlot({barplot(DF$counts[1:plotSize],xlab = "Mutations",ylab="Frequency",col = "#ff5e19")})
     } else {
       if(grepl(pattern = " ",x = searchTerm,fixed = T)){
         searchTerm <- unlist(strsplit(x = searchTerm, split = " ",fixed = T),use.names = F)
@@ -41,7 +41,7 @@ function(input, output,session) {
         DF <- data.frame(vroom::vroom("../tmp/tmp.csv",delim = ";",col_names = readLines("../data/ColumnNames.txt")),stringsAsFactors = F)
         output$table <- DT::renderDataTable(DT::datatable(data = DF, options(list(rownames = FALSE))))
         # system(command = "rm ../tmp/tmp.csv",intern = F)
-        output$plot <- renderPlot({barplot(DF$counts,xlab = "Mutations",ylab="Frequency",col = "#ff5e19")})
+        output$plot <- renderPlot({barplot(DF$counts[1:plotSize],xlab = "Mutations",ylab="Frequency",col = "#ff5e19")})
       }
     }
 })
