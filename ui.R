@@ -16,7 +16,7 @@ fluidPage(
   p('Visit ',
        a(href="https://cancer.sanger.ac.uk/cosmic",
        'COSMIC'),
-       '- the Catalogue Of Somatic Mutations In Cancer, which is the world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
+       '- the Catalogue Of Somatic Mutations In Cancer, world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
     ),
     plotOutput('plot'),
     p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
