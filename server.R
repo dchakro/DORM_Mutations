@@ -7,10 +7,6 @@ library(ggplot2)
 # write(colnames(DF),file = "./data/ColumnNames.txt",ncolumns = 1)
 # write.table(x = DF,file = "./data/Table.csv",col.names = F,row.names = F,sep = ";",quote = F)
 
-# DF <- readRDS("./data/20200918.Frequency_byTissue.RDS")
-# write(colnames(DF),file = "./data/ByTissue.ColumnNames.txt",ncolumns = 1)
-# write.table(x = DF,file = "./data/ByTissue.table.csv",col.names = F,row.names = F,sep = ";",quote = F)
-
 ## -- END --
 
 theme_plot=theme(axis.line = element_line(colour = "black",size=0.5),panel.border = element_blank(),panel.background=element_blank(),panel.grid.major=element_blank(),axis.text.y= element_text(size = rel(1.5),color="black",margin=unit(c(0.3,0.3,0.3,0.3), "cm")),legend.key= element_rect(fill=NA,colour = NA), axis.ticks.y =element_line(colour = "black"), axis.ticks.x = element_blank(),axis.text.x = element_blank(), legend.position="none",text=element_text(family="serif"),axis.ticks.length =unit(0.2, "cm"),axis.title.y = element_text(size=rel(1.5),face="bold.italic"),axis.title.x=element_text(size=rel(1.5),face="bold.italic"))
