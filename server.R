@@ -28,7 +28,7 @@ function(input, output,session) {
         command <- ""
         DF <- data.frame(vroom::vroom("./data/Table.csv",delim = ";",col_names = readLines("./data/ColumnNames.txt"),col_types = c(counts="i"),n_max = plotSize),stringsAsFactors = F)
         plotSize <- min(plotSize,nrow(DF),na.rm = T)
-        output$table <- renderTable(DF[1:plotSize,])
+        output$table <- renderTable(DF[1:plotSize,c(1,2,3,4)])
         DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
         output$plot <- renderPlot({ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])))})
     } else {
@@ -43,7 +43,7 @@ function(input, output,session) {
           system(command = command, intern = F, wait=T)
           DF <- data.frame(vroom::vroom("./tmp/tmp.csv",delim = ";",col_names = readLines("./data/ColumnNames.txt"),col_types = c(counts="i"),n_max = plotSize),stringsAsFactors = F)
           plotSize <- min(c(plotSize,nrow(DF)),na.rm = T)
-          output$table <- renderTable(DF[1:plotSize,])
+          output$table <- renderTable(DF[1:plotSize,c(1,2,3,4)])
           DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
           output$plot <- renderPlot({ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])))})
           # system(command = "rm ./tmp/tmp.csv",intern = F,wait=T)
