@@ -16,6 +16,8 @@ Tissue <- sort(unique(gsub(pattern = "^[[:space:]]",
 )
 )
 
+saveRDS(object = Tissue,file = "TissueTypes.RDS",compress = T)
+
 DF$mutID <- paste0(DF$Gene,"_",DF$Mutation)
 
 mat <- matrix(data = NA,nrow = nrow(DF),ncol = length(Tissue),dimnames = list(DF$mutID,Tissue))
@@ -42,6 +44,6 @@ rm(pb,i,counts)
 DF <- cbind(DF,mat)
 rm(mat)
 
-saveRDS(DF,file = "/Users/deepankar/OneDrive - O365 Turun yliopisto/ExtraWorkSync/Klaus-Lab-Data/Big Data/COSMIC/v91/Full_Database/20200918.COSMIC_Mutations_byTissue.mat.RDS",compress = T)
+# saveRDS(DF,file = "/Users/deepankar/OneDrive - O365 Turun yliopisto/ExtraWorkSync/Klaus-Lab-Data/Big Data/COSMIC/v91/Full_Database/20200918.COSMIC_Mutations_byTissue.mat.RDS",compress = T)
 
 
