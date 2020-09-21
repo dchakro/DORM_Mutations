@@ -21,9 +21,7 @@ function(input, output,session) {
   RunAnalysis <- reactive({list(input$Search,input$size)})
     observeEvent(RunAnalysis(),{
       searchTerm <- input$Search
-      plotSize <- as.integer(ifelse(test = (input$size == "all"),
-                          yes = 653684,
-                          no = input$size))
+      plotSize <- as.integer(input$size)
       if(searchTerm == ""){
         command <- ""
         DF <- data.frame(vroom::vroom("./data/Table.csv",delim = ";",col_names = readLines("./data/ColumnNames.txt"),col_types = c(counts="i"),n_max = plotSize),stringsAsFactors = F)

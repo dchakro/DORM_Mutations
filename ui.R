@@ -37,7 +37,7 @@ fluidPage(
         column(4,
                 selectInput("size",
                    "Select plot size:",
-                   c(10,50,100,500,1000,"all"),
+                   c(10,50,100,500,1000,10000),
                    selected = "100",
                    multiple = F,
                    selectize = F,
