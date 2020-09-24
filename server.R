@@ -3,7 +3,7 @@ library(shinythemes)
 library(ggplot2)
 
 ## -- Create essential files (initial run)
-# DF <- readRDS("./data/20200819.FrequencyByMutation.RDS")
+# DF <- readRDS("./data/20200924.FrequencyByMutation.RDS")
 # write(colnames(DF),file = "./data/ColumnNames.txt",ncolumns = 1)
 # write.table(x = DF,file = "./data/Table.csv",col.names = F,row.names = F,sep = ";",quote = F)
 
