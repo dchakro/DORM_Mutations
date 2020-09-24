@@ -1,1 +1,2 @@
 20200819.FrequencyByMutation.RDS filter=lfs diff=lfs merge=lfs -text
+*.xz filter=lfs diff=lfs merge=lfs -text
