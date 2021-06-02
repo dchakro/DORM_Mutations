@@ -6,12 +6,12 @@ library(shinyWidgets)
 fluidPage(
 	theme = shinytheme("united"),
 	titlePanel(title="",windowTitle = "Hotspot Mutations"),
-  h1(id="pageTitle","Frequency of Mutations in COSMIC v91"),
+  h1(id="pageTitle","Frequency of Mutations in COSMIC v92"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	p('This website sources data from', 
-		a(href="https://cosmic-blog.sanger.ac.uk/cosmic-release-v91/",
+		a(href="https://cosmic-blog.sanger.ac.uk/cosmic-release-v92/",
 		'COSMIC database'),
-		'(v91, released 2020/04/07) and presents the frequency of somatic mutations in different genes.'
+		'(v92, released 2020/08/27) and presents the frequency of somatic mutations in different genes.'
 	),
   p('Visit ',
        a(href="https://cancer.sanger.ac.uk/cosmic",

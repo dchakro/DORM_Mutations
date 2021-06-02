@@ -3,19 +3,22 @@ library(shinythemes)
 library(ggplot2)
 
 # -- Create essential files (initial run)
-if(file.exists("./data/Table.csv")){
+if(!file.exists("./data/Table.csv")){
   DF <- readRDS("./data/20201006.FrequencyByMutation.RDS")
   write(colnames(DF),file = "./data/ColumnNames.txt",ncolumns = 1)
   write.table(x = DF,file = "./data/Table.csv",col.names = F,row.names = F,sep = ";",quote = F)
 }
 
+# Or load from xz archive
+# if(!file.exists("./data/Table.csv")){
+#   system(command = "xz -kd ./data/Table.csv.xz",intern = F,wait = T)
+# }
+
+
 ## -- END --
 
-theme_plot=theme(axis.line = element_line(colour = "black",size=0.5),panel.border = element_blank(),panel.background=element_blank(),panel.grid.major=element_blank(),axis.text.y= element_text(size = rel(1.5),color="black",margin=unit(c(0.3,0.3,0.3,0.3), "cm")),legend.key= element_rect(fill=NA,colour = NA), axis.ticks.y =element_line(colour = "black"), axis.ticks.x = element_blank(),axis.text.x = element_blank(), legend.position="none",text=element_text(family="serif"),axis.ticks.length =unit(0.2, "cm"),axis.title.y = element_text(size=rel(1.5),face="bold.italic"),axis.title.x=element_text(size=rel(1.5),face="bold.italic"))
+theme_plot=theme(axis.line = element_line(colour = "black",size=0.5),panel.border = element_blank(),panel.background=element_blank(),panel.grid.major=element_blank(),axis.text.y= element_text(size = rel(1.5),color="black",margin=unit(c(0.3,0.3,0.3,0.3), "cm")),legend.key= element_rect(fill=NA,colour = NA), axis.ticks.y =element_line(colour = "black"), axis.ticks.x = element_blank(),axis.text.x = element_blank(), legend.position="none",text=element_text(family="serif"),axis.ticks.length =unit(0.2, "cm"),axis.title.y = element_text(size=rel(1.5),face="italic"),axis.title.x=element_text(size=rel(1.5),face="italic"))
 
-if(!file.exists("./data/Table.csv")){
-  system(command = "xz -kd ./data/Table.csv.xz",intern = F,wait = T)
-}
 
 # colnames(DF)[3]  <- "Total Cases"
 # colnames(DF)[4] <- "Number of mutations in different tissues"
