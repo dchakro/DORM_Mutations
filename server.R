@@ -2,10 +2,12 @@ library(shiny)
 library(shinythemes)
 library(ggplot2)
 
-## -- Create essential files (initial run)
-# DF <- readRDS("./data/20200924.FrequencyByMutation.RDS")
-# write(colnames(DF),file = "./data/ColumnNames.txt",ncolumns = 1)
-# write.table(x = DF,file = "./data/Table.csv",col.names = F,row.names = F,sep = ";",quote = F)
+# -- Create essential files (initial run)
+if(file.exists("./data/Table.csv")){
+  DF <- readRDS("./data/20201006.FrequencyByMutation.RDS")
+  write(colnames(DF),file = "./data/ColumnNames.txt",ncolumns = 1)
+  write.table(x = DF,file = "./data/Table.csv",col.names = F,row.names = F,sep = ";",quote = F)
+}
 
 ## -- END --
 
