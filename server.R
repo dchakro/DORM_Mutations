@@ -30,7 +30,7 @@ function(input, output,session) {
         plotSize <- min(plotSize,nrow(DF),na.rm = T)
         output$table <- renderTable(DF[1:plotSize,c(1,2,3,4)])
         DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
-        output$plot <- renderPlot({ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])))})
+        output$plot <- renderPlot({ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))})
     } else {
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
           searchTerm <- unlist(strsplit(x = searchTerm, split = " ",fixed = T),use.names = F)
@@ -45,7 +45,7 @@ function(input, output,session) {
           plotSize <- min(c(plotSize,nrow(DF)),na.rm = T)
           output$table <- renderTable(DF[1:plotSize,c(1,2,3,4)])
           DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
-          output$plot <- renderPlot({ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])))})
+          output$plot <- renderPlot({ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))})
           # system(command = "rm ./tmp/tmp.csv",intern = F,wait=T)
         }
       }
