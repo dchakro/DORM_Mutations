@@ -1,4 +1,0 @@
-Gene
-Mutation
-counts
-Frequency

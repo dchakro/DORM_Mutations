@@ -3,6 +3,10 @@ library(shiny)
 library(shinythemes)
 library(shinyWidgets)
 
+tissues <- readLines("./data/ColumnNames.txt",warn = F)
+'%nin%' <- Negate('%in%')
+tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
+
 fluidPage(
 	theme = shinytheme("united"),
 	titlePanel(title="",windowTitle = "Hotspot Mutations"),
@@ -36,13 +40,22 @@ fluidPage(
         ),
         column(4,
                 selectInput("size",
-                   "Select plot size:",
+                   "No. of records:",
                    c(10,50,100,500,1000,10000),
                    selected = "100",
                    multiple = F,
                    selectize = F,
                    width = "120")
-               )
+               ),
+        column(4,
+               selectInput("tissue",
+                           "Select tissue:",
+                           c("all",tissues),
+                           selected = "all",
+                           multiple = F,
+                           selectize = F,
+                           width = "200")
+        )
         ),
   tableOutput("table"),
 	p('Note: NS = Not specified')
