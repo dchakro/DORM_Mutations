@@ -20,3 +20,6 @@ for(tissue in tissues){
               sep = ";",
               quote = F)
 }
+
+message("Remember to create ./tmp directory")
+message("Then, run sudo chown -R shiny:shiny tmp ")
