@@ -17,6 +17,11 @@ theme_plot=theme(axis.line = element_line(colour = "black",size=0.5),panel.borde
 # colnames(DF)[4] <- "Number of mutations in different tissues"
 function(input, output,session) {
   RunAnalysis <- reactive({list(input$Search,input$size,input$tissue)})
+    observeEvent(input$reset_input, {
+      updateNumericInput(session, "size", value = 100)
+      updateTextInput(session, "tissue", value = "all")
+      updateSearchInput(session,"Search",value = "",trigger = T)
+    })
     observeEvent(RunAnalysis(),{
       searchTerm <- input$Search
       plotSize <- as.integer(input$size)
@@ -56,7 +61,7 @@ function(input, output,session) {
         }
       }
 })
-  session$onSessionEnded(function() {
+    session$onSessionEnded(function() {
         gc()
         # file.remove(c("./data/Table.csv","./data/ColumnNames.txt"))
         stopApp()

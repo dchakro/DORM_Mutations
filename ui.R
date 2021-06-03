@@ -28,7 +28,7 @@ fluidPage(
     strong(span("lung",style='color:#ff5e19'))
     ,align="left"),
     fluidRow(
-        column(4,
+        column(3,
                searchInput(
                   inputId = "Search",
                   label = "Type search term(s):",
@@ -38,7 +38,7 @@ fluidPage(
                   btnReset = icon("remove"),
                   width = "100%")
         ),
-        column(4,
+        column(2,
                 selectInput("size",
                    "No. of records:",
                    c(10,50,100,500,1000,10000),
@@ -47,7 +47,7 @@ fluidPage(
                    selectize = F,
                    width = "120")
                ),
-        column(4,
+        column(3,
                selectInput("tissue",
                            "Select tissue:",
                            c("all",tissues),
@@ -55,7 +55,15 @@ fluidPage(
                            multiple = F,
                            selectize = F,
                            width = "200")
-        )
+              ),
+        column(1,actionBttn(
+                 inputId = "reset_input",
+                 label = "Reset",
+                 style = "pill", 
+                 color = "warning",
+                 size = "md"
+               )
+               ,offset = 1)
         ),
   tableOutput("table"),
 	p('Note: NS = Not specified')
