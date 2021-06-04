@@ -48,7 +48,7 @@ function(input, output,session) {
         
         
         output$plot <- renderPlot({
-          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = -1) + theme(legend.position="bottom",legend.text=element_text(family="serif")) + guides(fill = guide_legend(title = "Genes", title.position = "left",title.theme = element_text(family="serif", face = "italic", angle = 0)))+ coord_polar(theta = "y")
+          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = -1) + theme(legend.position="top",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=15)))+ coord_polar(theta = "y")
         ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
         
         plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(4, 1))
@@ -81,7 +81,7 @@ function(input, output,session) {
           print(pie_table)
           
           output$plot <- renderPlot({
-            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = -1) + theme(legend.position="bottom",legend.text=element_text(family="serif")) + guides(fill = guide_legend(title = "Genes", title.position = "left",title.theme = element_text(family="serif", face = "italic", angle = 0)))+ coord_polar(theta = "y")
+            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = -1) + theme(legend.position="top",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes:", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=15)))+ coord_polar(theta = "y")
             ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
             
             plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(4, 1))
