@@ -39,19 +39,19 @@ function(input, output,session) {
         DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_") 
         
         threshold <- 20
-        topN <- DF[1:threshold,c(1,2,3)]
-        colnames(topN) <- c("Gene","Mutation","count")
+        topN <- DF[1:threshold,c(1,3)]
+        colnames(topN) <- c("Gene","count")
         pie_table <- aggregate(topN$count~topN$Gene,FUN=sum)
         colnames(pie_table) <- c("Gene","count")
         pie_table <- pie_table[order(pie_table[,2],decreasing = T),]
-        print(pie_table)
+        # print(pie_table)
         
         
         output$plot <- renderPlot({
-          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = -1) + theme(legend.position="top",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=15)))+ coord_polar(theta = "y")
+          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = 1) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=12)))+ coord_polar(theta = "y",direction = -1)
         ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
         
-        plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(4, 1))
+        plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(6, 2))
         })
     } else {
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
@@ -73,18 +73,18 @@ function(input, output,session) {
           DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
           
           threshold <- 20
-          topN <- DF[1:threshold,c(1,2,3)]
-          colnames(topN) <- c("Gene","Mutation","count")
+          topN <- DF[1:threshold,c(1,3)]
+          colnames(topN) <- c("Gene","count")
           pie_table <- aggregate(topN$count~topN$Gene,FUN=sum)
           colnames(pie_table) <- c("Gene","count")
           pie_table <- pie_table[order(pie_table[,2],decreasing = T),]
           print(pie_table)
           
           output$plot <- renderPlot({
-            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = -1) + theme(legend.position="top",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes:", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=15)))+ coord_polar(theta = "y")
+            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = 1) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=12)))+ coord_polar(theta = "y",direction = -1)
             ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
             
-            plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(4, 1))
+            plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(6, 2))
           })
           # system(command = "rm ./tmp/tmp.csv",intern = F,wait=T)
         }
