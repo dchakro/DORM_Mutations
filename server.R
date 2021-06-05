@@ -39,12 +39,11 @@ function(input, output,session) {
         DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_") 
         
         threshold <- 20
-        topN <- DF[1:threshold,c(1,3)]
-        colnames(topN) <- c("Gene","count")
-        pie_table <- aggregate(topN$count~topN$Gene,FUN=sum)
+        pie_table <- aggregate(DF$count~DF$Gene,FUN=sum)
         colnames(pie_table) <- c("Gene","count")
-        pie_table <- pie_table[order(pie_table[,2],decreasing = T),]
-        # print(pie_table)
+        pie_table <- pie_table[order(pie_table$count,decreasing = T),]
+        pie_table <- pie_table[1:threshold,]
+        print(pie_table)
         
         
         output$plot <- renderPlot({
@@ -73,11 +72,10 @@ function(input, output,session) {
           DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
           
           threshold <- 20
-          topN <- DF[1:threshold,c(1,3)]
-          colnames(topN) <- c("Gene","count")
-          pie_table <- aggregate(topN$count~topN$Gene,FUN=sum)
+          pie_table <- aggregate(DF$count~DF$Gene,FUN=sum)
           colnames(pie_table) <- c("Gene","count")
-          pie_table <- pie_table[order(pie_table[,2],decreasing = T),]
+          pie_table <- pie_table[order(pie_table$count,decreasing = T),]
+          pie_table <- pie_table[1:threshold,]
           print(pie_table)
           
           output$plot <- renderPlot({
