@@ -38,7 +38,7 @@ function(input, output,session) {
         # Trying top N
         DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_") 
         
-        threshold <- 20
+        threshold <- min(plotSize,20)
         pie_table <- aggregate(DF$count~DF$Gene,FUN=sum)
         colnames(pie_table) <- c("Gene","count")
         pie_table <- pie_table[order(pie_table$count,decreasing = T),]
@@ -71,7 +71,7 @@ function(input, output,session) {
           }
           DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
           
-          threshold <- 20
+          threshold <- min(plotSize,20)
           pie_table <- aggregate(DF$count~DF$Gene,FUN=sum)
           colnames(pie_table) <- c("Gene","count")
           pie_table <- pie_table[order(pie_table$count,decreasing = T),]
