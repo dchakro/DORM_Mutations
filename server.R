@@ -43,7 +43,7 @@ function(input, output,session) {
         colnames(pie_table) <- c("Gene","count")
         pie_table <- pie_table[order(pie_table$count,decreasing = T),]
         pie_table <- pie_table[1:threshold,]
-        print(pie_table)
+        # print(pie_table)
         
         
         output$plot <- renderPlot({
@@ -76,7 +76,7 @@ function(input, output,session) {
           colnames(pie_table) <- c("Gene","count")
           pie_table <- pie_table[order(pie_table$count,decreasing = T),]
           pie_table <- pie_table[1:threshold,]
-          print(pie_table)
+          # print(pie_table)
           
           output$plot <- renderPlot({
             ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_viridis_d(option = "plasma",direction = 1) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=12)))+ coord_polar(theta = "y",direction = -1)

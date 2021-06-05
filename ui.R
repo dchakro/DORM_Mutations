@@ -24,9 +24,8 @@ fluidPage(
     ),
     plotOutput('plot'),
     p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
-    strong(span("KRAS G12C",style='color:#ff5e19')), '/' ,
-    strong(span("lung",style='color:#ff5e19'))
-    ,align="left"),
+    strong(span("KRAS G12C",style='color:#ff5e19')) ,
+    align="left"),
     fluidRow(
         column(3,
                searchInput(
