@@ -43,17 +43,17 @@ function(input, output,session) {
         colnames(pie_table_all) <- c("Gene","count")
         pie_table_all <- pie_table_all[order(pie_table_all$count,decreasing = T),]
         pie_table <- pie_table_all[1:threshold,]
-        pie_table[(threshold+1),] <- list("Others",sum(pie_table_all$count))
+        pie_table[(threshold+1),] <- list("Others",sum(pie_table_all$count[(threshold+1):length(pie_table_all$count)]))
         rm(pie_table_all);gc()
         sliceColors <- rep(NA,length(pie_table$Gene))
         idx <- which(pie_table$Gene == "Others")
         sliceColors[idx] <- "#c7c7c7"
-        sliceColors[-idx] <- viridis::plasma(20,direction = 1)
+        sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
         names(sliceColors) <- pie_table$Gene
         # print(pie_table)
         
         output$plot <- renderPlot({
-          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=12)))+ coord_polar(theta = "y",direction = -1)
+          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0),override.aes = list(size = 3)))+ coord_polar(theta = "y",direction = -1)
         ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
         
         plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(2, 2))
@@ -77,23 +77,29 @@ function(input, output,session) {
           }
           DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
           
-          threshold <- min(plotSize,20)
           pie_table_all <- aggregate(DF$count~DF$Gene,FUN=sum)
+          threshold <- min(plotSize,20)
           colnames(pie_table_all) <- c("Gene","count")
-          pie_table_all <- pie_table_all[order(pie_table_all$count,decreasing = T),]
-          pie_table <- pie_table_all[1:threshold,]
-          pie_table[(threshold+1),] <- list("Others",sum(pie_table_all$count))
-          rm(pie_table_all);gc()
-          sliceColors <- rep(NA,length(pie_table$Gene))
-          idx <- which(pie_table$Gene == "Others")
-          sliceColors[idx] <- "#c7c7c7"
-          sliceColors[-idx] <- viridis::plasma(20,direction = 1)
-          names(sliceColors) <- pie_table$Gene
-          print(pie_table)
-          # print(pie_table)
+          
+          if(length(pie_table_all$Gene) == 1){
+            pie_table <- pie_table_all
+            print(pie_table)
+          } else {
+            pie_table_all <- pie_table_all[order(pie_table_all$count,decreasing = T),]
+            threshold <- min(threshold,length(pie_table_all$Gene))
+            pie_table <- pie_table_all[1:threshold,]
+            pie_table[(threshold+1),] <- list("Others",sum(pie_table_all$count[(threshold+1):length(pie_table_all$count)]))
+            rm(pie_table_all);gc()
+            sliceColors <- rep(NA,length(pie_table$Gene))
+            idx <- which(pie_table$Gene == "Others")
+            sliceColors[idx] <- "#c7c7c7"
+            sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
+            names(sliceColors) <- pie_table$Gene
+            # print(pie_table)
+          }
           
           output$plot <- renderPlot({
-            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0,size=12)))+ coord_polar(theta = "y",direction = -1)
+            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0),override.aes = list(size = 3)))+ coord_polar(theta = "y",direction = -1)
             ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
             
             plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(2, 2))
