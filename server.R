@@ -23,7 +23,7 @@ function(input, output,session) {
       updateSearchInput(session,"Search",value = "",trigger = T)
     })
     observeEvent(RunAnalysis(),{
-      searchTerm <- input$Search
+      searchTerm <- toupper(input$Search)
       plotSize <- as.integer(input$size)
       targetTissue <- input$tissue
       if(searchTerm == ""){
@@ -61,9 +61,9 @@ function(input, output,session) {
     } else {
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
           searchTerm <- unlist(strsplit(x = searchTerm, split = " ",fixed = T),use.names = F)
-          command <- paste0("grep -i '",searchTerm[1],"' ./data/tissue/",targetTissue,".csv | ",paste0("grep -i '",searchTerm[2:length(searchTerm)],"'",collapse = " | "), " >| ./tmp/tmp.csv")
+          command <- paste0("egrep '",searchTerm[1],"' ./data/tissue/",targetTissue,".csv | ",paste0("egrep '",searchTerm[2:length(searchTerm)],"'",collapse = " | "), " >| ./tmp/tmp.csv")
         } else {
-          if(searchTerm != "") command = paste0("grep -i '",searchTerm,"' ./data/tissue/",targetTissue,".csv >| ./tmp/tmp.csv")
+          if(searchTerm != "") command = paste0("egrep '",searchTerm,"' ./data/tissue/",targetTissue,".csv >| ./tmp/tmp.csv")
         }
         if(command != "" ){
           print(command)
