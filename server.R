@@ -60,15 +60,19 @@ function(input, output,session) {
         })
     } else {
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
+          resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
           searchTerm <- unlist(strsplit(x = searchTerm, split = " ",fixed = T),use.names = F)
-          command <- paste0("egrep '",searchTerm[1],"' ./data/tissue/",targetTissue,".csv | ",paste0("egrep '",searchTerm[2:length(searchTerm)],"'",collapse = " | "), " >| ./tmp/tmp.csv")
+          command <- paste0("egrep '",searchTerm[1],"' ./data/tissue/",targetTissue,".csv | ",paste0("egrep '",searchTerm[2:length(searchTerm)],"'",collapse = " | "), " >| ",resultsFile)
         } else {
-          if(searchTerm != "") command = paste0("egrep '",searchTerm,"' ./data/tissue/",targetTissue,".csv >| ./tmp/tmp.csv")
+          resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
+          if(searchTerm != "") command = paste0("egrep '",searchTerm,"' ./data/tissue/",targetTissue,".csv >| ",resultsFile)
         }
         if(command != "" ){
-          print(command)
+          # print(command)
           system(command = command, intern = F, wait=T)
-          DF <- data.frame(vroom::vroom("./tmp/tmp.csv",delim = ";",col_names = readLines("./data/ColumnNames.txt"),col_types = c(counts="i"),n_max = plotSize),stringsAsFactors = F)
+          DF <- data.frame(vroom::vroom(file = resultsFile,delim = ";",col_names = readLines("./data/ColumnNames.txt"),col_types = c(counts="i"),n_max = plotSize),stringsAsFactors = F)
+          file.remove(resultsFile) # removes the result file after reading the data
+          resultsFile <- ""
           plotSize <- min(c(plotSize,nrow(DF)),na.rm = T)
           if(targetTissue != "all"){
             output$table <- renderTable(DF[1:plotSize,c(1,2,3)])
@@ -83,7 +87,7 @@ function(input, output,session) {
           
           if(length(pie_table_all$Gene) == 1){
             pie_table <- pie_table_all
-            print(pie_table)
+            # print(pie_table)
             sliceColors <- viridis::plasma(length(pie_table$Gene),direction = 1)
             names(sliceColors) <- pie_table$Gene            
           } else {
