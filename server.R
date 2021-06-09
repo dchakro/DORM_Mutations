@@ -10,7 +10,7 @@ library(ggplot2)
 
 ## -- END --
 
-theme_plot=theme(axis.line = element_line(colour = "black",size=0.5),panel.border = element_blank(),panel.background=element_blank(),panel.grid.major=element_blank(),axis.text.y= element_text(size = rel(1.5),color="black",margin=unit(c(0.3,0.3,0.3,0.3), "cm")),legend.key= element_rect(fill=NA,colour = NA), axis.ticks.y =element_line(colour = "black"), axis.ticks.x = element_blank(),axis.text.x = element_blank(), legend.position="none",text=element_text(family="serif"),axis.ticks.length =unit(0.2, "cm"),axis.title.y = element_text(size=rel(1.5),face="italic"),axis.title.x=element_text(size=rel(1.5),face="italic"))
+theme_bar_plot=theme(axis.line = element_line(colour = "black",size=0.5),panel.border = element_blank(),panel.background=element_blank(),panel.grid.major=element_blank(),axis.text.y= element_text(size = rel(1.5),color="black",margin=unit(c(0.3,0.3,0.3,0.3), "cm")),legend.key= element_rect(fill=NA,colour = NA), axis.ticks.y =element_line(colour = "black"), axis.ticks.x = element_blank(),axis.text.x = element_blank(), legend.position="none",text=element_text(family="serif"),axis.ticks.length =unit(0.2, "cm"),axis.title.y = element_text(size=rel(1.5),face="italic"),axis.title.x=element_text(size=rel(1.5),face="italic"))
 
 
 # colnames(DF)[3]  <- "Total Cases"
@@ -53,8 +53,8 @@ function(input, output,session) {
         # print(pie_table)
         
         output$plot <- renderPlot({
-          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0),override.aes = list(size = 3)))+ coord_polar(theta = "y",direction = -1)
-        ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
+          ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=12),legend.key.size = unit(0.5, "lines")) + guides(fill = guide_legend(title = "Genes", title.position = "top", byrow = T, nrow = (threshold+1),title.theme = element_text(family="serif", face = "italic", angle = 0)))+ coord_polar(theta = "y",direction = -1)
+        ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_bar_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
         
         plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(2, 2))
         })
@@ -101,8 +101,8 @@ function(input, output,session) {
           }
           
           output$plot <- renderPlot({
-            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=10)) + guides(fill = guide_legend(title = "Genes", title.position = "top",title.theme = element_text(family="serif", face = "italic", angle = 0),override.aes = list(size = 3)))+ coord_polar(theta = "y",direction = -1)
-            ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
+            ggPie <- ggplot(pie_table,aes(x="",y=count,fill=reorder(Gene,-count)))+geom_bar(stat="identity", width=1, color="white") + theme_void() + scale_fill_manual(values= sliceColors) + theme(legend.position="right",legend.text=element_text(family="serif",size=12),legend.key.size = unit(0.5, "lines")) + guides(fill = guide_legend(title = "Genes", title.position = "top", byrow = T, nrow = (threshold+1),title.theme = element_text(family="serif", face = "italic", angle = 0)))+ coord_polar(theta = "y",direction = -1)
+            ggBar <- ggplot(data=DF[1:plotSize,],aes(x=reorder(mutsID,-counts),y=counts))+geom_col(fill="#ff5e19",color=NA)+ylab("Number of somatic mutations")+xlab(paste0("Mutations (n=",plotSize,")"))+theme_bar_plot+scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
             
             plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(2, 2))
           })
