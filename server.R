@@ -84,6 +84,8 @@ function(input, output,session) {
           if(length(pie_table_all$Gene) == 1){
             pie_table <- pie_table_all
             print(pie_table)
+            sliceColors <- viridis::plasma(length(pie_table$Gene),direction = 1)
+            names(sliceColors) <- pie_table$Gene            
           } else {
             pie_table_all <- pie_table_all[order(pie_table_all$count,decreasing = T),]
             threshold <- min(threshold,length(pie_table_all$Gene))
