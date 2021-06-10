@@ -110,13 +110,11 @@ function(input, output,session) {
             
             plotObject1 <-  gridExtra::grid.arrange(ggBar,ggPie,ncol=2,nrow=1,widths = c(2, 2))
           })
-          # system(command = "rm ./tmp/tmp.csv",intern = F,wait=T)
         }
       }
 })
     session$onSessionEnded(function() {
         gc()
-        # file.remove(c("./data/Table.csv","./data/ColumnNames.txt"))
         stopApp()
       })
 }

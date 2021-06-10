@@ -9,6 +9,7 @@ tissues <- readLines("./data/ColumnNames.txt",warn = F)
 '%nin%' <- Negate('%in%')
 tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
+dir.create("./tmp")
 dir.create("./data/tissue")
 file.copy("./data/RAW_DATA.csv","./data/tissue/all.csv")
 
@@ -29,5 +30,4 @@ writeTissueCSV <- function(tissue){
 invisible(lapply(X = tissues,FUN = function(x) writeTissueCSV(x)))
 
 message("Done!")
-message("Remember to create ./tmp directory")
-message("Then, run sudo chown -R shiny:shiny tmp ")
+message("Note: Run  sudo chown -R shiny:shiny tmp ")
