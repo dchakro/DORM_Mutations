@@ -1,5 +1,6 @@
 library(shiny)
 library(shinythemes)
+library(data.table)
 library(ggplot2)
 
 # Or load from xz archive
@@ -48,34 +49,44 @@ function(input, output,session) {
       targetTissue <- input$tissue
       if(searchTerm == ""){
         command <- ""
-        DF <- data.frame(vroom::vroom(paste0("./data/tissue/",targetTissue,".csv"),
-                                      delim = ";",
-                                      col_names = readLines("./data/ColumnNames.txt"),
-                                      col_types = c(counts="i"),
-                                      n_max = plotSize),
-                         stringsAsFactors = F)
-        plotSize <- min(plotSize,nrow(DF), na.rm = T)
         if(targetTissue != "all"){
           output$table <- renderTable(DF[1:plotSize, c(1,2,3)])
+          DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
+                                  sep = ";",
+                                  header = F,
+                                  col.names = readLines("./data/ColumnNames.txt")[1:3],
+                                  nrows = plotSize,
+                                  stringsAsFactors = F,
+                                  showProgress = F)
         } else {
+          DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
+                                  sep = ";",
+                                  header = F,
+                                  col.names = readLines("./data/ColumnNames.txt"),
+                                  nrows = plotSize,
+                                  stringsAsFactors = F,
+                                  showProgress = F)
           output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
         }
-        # Trying top N
-        DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_") 
+        plotSize <- min(plotSize,nrow(DF), na.rm = T)
+         
+        DF[,mutsID := paste0(Gene,Mutation,sep="_")]
         
-        threshold <- min(plotSize,20)
-        pie_table_all <- aggregate(DF$count~DF$Gene,FUN=sum)
-        colnames(pie_table_all) <- c("Gene","count")
-        pie_table_all <- pie_table_all[order(pie_table_all$count,decreasing = T),]
-        pie_table <- pie_table_all[1:threshold,]
-        pie_table[(threshold+1),] <- list("Others",sum(pie_table_all$count[(threshold+1):length(pie_table_all$count)]))
+        pie_table_all <- DF[,.(count=sum(counts)), by = Gene]
+        setorder(pie_table_all, -count, Gene)
+        threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
+        pie_table <- pie_table_all[1:threshold, ]
+        pie_table <-
+          data.table::rbindlist(l = list(pie_table, list("Others", sum(
+            pie_table_all[(threshold + 1):dim(pie_table_all)[1], "count"], na.rm = T
+          ))))
+        
         rm(pie_table_all);gc()
         sliceColors <- rep(NA, length(pie_table$Gene))
         idx <- which(pie_table$Gene == "Others")
         sliceColors[idx] <- "#c7c7c7"
         sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
         names(sliceColors) <- pie_table$Gene
-        # print(pie_table)
         
         output$plot <- renderPlot({
           ggPie <- ggplot(pie_table, aes(x="",
@@ -136,14 +147,14 @@ function(input, output,session) {
           if(searchTerm != "") command = paste0("egrep '", searchTerm, "' ./data/tissue/", targetTissue, ".csv >| ", resultsFile)
         }
         if(command != "" ){
-          # print(command)
           system(command = command, intern = F, wait=T)
-          DF <- data.frame(vroom::vroom(file = resultsFile,
-                                        delim = ";",
-                                        col_names = readLines("./data/ColumnNames.txt"),
-                                        col_types = c(counts="i"),
-                                        n_max = plotSize),
-                           stringsAsFactors = F)
+          DF <- data.table::fread(file = resultsFile,
+                                  sep = ";",
+                                  header = F,
+                                  col.names = readLines("./data/ColumnNames.txt")[1:3],
+                                  nrows = plotSize,
+                                  stringsAsFactors = F,
+                                  showProgress = F)
           file.remove(resultsFile) # removes the result file after reading the data
           resultsFile <- ""
           plotSize <- min(c(plotSize,nrow(DF)),na.rm = T)
@@ -152,29 +163,28 @@ function(input, output,session) {
           } else {
             output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
           }
-          DF$mutsID <- paste(DF$Gene,DF$Mutation,sep="_")
           
-          pie_table_all <- aggregate(DF$count~DF$Gene,FUN=sum)
-          threshold <- min(plotSize,20)
-          colnames(pie_table_all) <- c("Gene","count")
+          DF[,mutsID := paste0(Gene,Mutation,sep="_")]
+          pie_table_all <- DF[,.(count=sum(counts)), by = Gene]
           
           if(length(pie_table_all$Gene) == 1){
             pie_table <- pie_table_all
-            # print(pie_table)
             sliceColors <- viridis::plasma(length(pie_table$Gene),direction = 1)
             names(sliceColors) <- pie_table$Gene            
           } else {
-            pie_table_all <- pie_table_all[order(pie_table_all$count,decreasing = T),]
-            threshold <- min(threshold,length(pie_table_all$Gene))
-            pie_table <- pie_table_all[1:threshold,]
-            pie_table[(threshold+1),] <- list("Others",sum(pie_table_all$count[(threshold+1):length(pie_table_all$count)]))
+            setorder(pie_table_all, -count, Gene)
+            threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
+            pie_table <- pie_table_all[1:threshold, ]
+            pie_table <-
+              data.table::rbindlist(l = list(pie_table, list("Others", sum(
+                pie_table_all[(threshold + 1):dim(pie_table_all)[1], "count"], na.rm = T
+              ))))
             rm(pie_table_all);gc()
             sliceColors <- rep(NA,length(pie_table$Gene))
             idx <- which(pie_table$Gene == "Others")
             sliceColors[idx] <- "#c7c7c7"
             sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
             names(sliceColors) <- pie_table$Gene
-            # print(pie_table)
           }
           
           output$plot <- renderPlot({
