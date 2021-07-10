@@ -77,7 +77,7 @@ function(input, output,session) {
         pie_table <- pie_table_all[1:threshold, ]
         pie_table <-
           data.table::rbindlist(l = list(pie_table, list("Others", sum(
-            pie_table_all[(threshold + 1):dim(pie_table_all)[1], "count"], na.rm = T
+            pie_table_all[(threshold + 1):nrow(pie_table_all), "count"], na.rm = T
           ))))
         
         rm(pie_table_all);gc()
@@ -175,10 +175,16 @@ function(input, output,session) {
           } else {
             setorder(pie_table_all, -count, Gene)
             pie_table <- pie_table_all[1:threshold, ]
-            pie_table <-
-              data.table::rbindlist(l = list(pie_table, list("Others", sum(
-                pie_table_all[(threshold + 1):dim(pie_table_all)[1], "count"], na.rm = T
-              ))))
+            if(threshold < nrow(pie_table_all)){
+              pie_table <-
+                data.table::rbindlist(l = list(pie_table, list("Others", sum(
+                  pie_table_all[(threshold + 1):nrow(pie_table_all), "count"], na.rm = T
+                ))))  
+            } else {
+              pie_table <-
+                data.table::rbindlist(l = list(pie_table, list("Others", 0 )))  
+            }
+            
             rm(pie_table_all);gc()
             sliceColors <- rep(NA,length(pie_table$Gene))
             idx <- which(pie_table$Gene == "Others")
