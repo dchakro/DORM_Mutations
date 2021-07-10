@@ -36,7 +36,7 @@ theme_bar_plot=theme(axis.line = element_line(colour = "black",
 # colnames(DF)[3]  <- "Total Cases"
 # colnames(DF)[4] <- "Number of mutations in different tissues"
 function(input, output,session) {
-  RunAnalysis <- reactive({list(input$Search,input$size,input$tissue)})
+  RunAnalysis <- reactive({list(input$Search, input$size, input$tissue)})
     observeEvent(input$reset_input, {
       updateNumericInput(session, "size", value = 100)
       updateTextInput(session, "tissue", value = "all")
@@ -84,8 +84,11 @@ function(input, output,session) {
           ggPie <- ggplot(pie_table, aes(x="",
                                          y=count,
                                          fill=reorder(Gene,-count))) +
-            geom_bar(stat="identity", width=1, color="white") + 
-            theme_void() + scale_fill_manual(values= sliceColors) + 
+            geom_bar(stat="identity",
+                     width=1,
+                     color="white") + 
+            theme_void() + 
+            scale_fill_manual(values= sliceColors) + 
             theme(legend.position="right",
                   legend.text=element_text(family="serif",
                                            size=12),
@@ -179,7 +182,7 @@ function(input, output,session) {
             }
             
             rm(pie_table_all);gc()
-            sliceColors <- rep(NA,length(pie_table$Gene))
+            sliceColors <- rep(NA, length(pie_table$Gene))
             idx <- which(pie_table$Gene == "Others")
             sliceColors[idx] <- "#c7c7c7"
             sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
@@ -216,7 +219,8 @@ function(input, output,session) {
               ylab("Number of somatic mutations")+
               xlab(paste0("Mutations (n=", plotSize, ")"))+
               theme_bar_plot+
-              scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), expand = c(0, 0))
+              scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
+                                 expand = c(0, 0))
             
             plotObject1 <-  gridExtra::grid.arrange(ggBar,
                                                     ggPie,
