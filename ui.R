@@ -1,21 +1,19 @@
 library(ggplot2)
 library(shiny)
-library(shinythemes)
-library(shinyWidgets)
 
 tissues <- readLines("./data/ColumnNames.txt",warn = F)
 '%nin%' <- Negate('%in%')
 tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
 fluidPage(
-	theme = shinytheme("united"),
+	theme = shinythemes::shinytheme("united"),
 	titlePanel(title="",windowTitle = "Hotspot Mutations"),
-  h1(id="pageTitle","Frequency of Mutations in COSMIC v92"),
+  h1(id="pageTitle","Frequency of Mutations in COSMIC v94"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	p('This website sources data from', 
-		a(href="https://cosmic-blog.sanger.ac.uk/cosmic-release-v92/",
+		a(href="https://cosmic-blog.sanger.ac.uk/cosmic-release-v94/",
 		'COSMIC database'),
-		'(v92, released 2020/08/27) and presents the frequency of somatic mutations in different genes.'
+		'(v94, released 2021/05/28) and presents the frequency of somatic mutations in different genes.'
 	),
   p('Visit ',
        a(href="https://cancer.sanger.ac.uk/cosmic",
@@ -28,7 +26,7 @@ fluidPage(
     align="left"),
     fluidRow(
         column(3,
-               searchInput(
+               shinyWidgets::searchInput(
                   inputId = "Search",
                   label = "Type search term(s):",
                   value="",
@@ -38,7 +36,7 @@ fluidPage(
                   width = "100%")
         ),
         column(2,
-                selectInput("size",
+               selectInput("size",
                    "No. of records:",
                    c(10,50,100,500,1000,10000),
                    selected = "100",
@@ -55,7 +53,7 @@ fluidPage(
                            selectize = F,
                            width = "200")
               ),
-        column(1,actionBttn(
+        column(1,shinyWidgets::actionBttn(
                  inputId = "reset_input",
                  label = "Reset",
                  style = "pill", 

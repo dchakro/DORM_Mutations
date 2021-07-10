@@ -1,5 +1,4 @@
 library(shiny)
-library(shinythemes)
 library(data.table)
 library(ggplot2)
 
@@ -7,7 +6,7 @@ library(ggplot2)
 # if(!file.exists("./data/Table.csv")){
 #   system(command = "xz -kd ./data/Table.csv.xz",intern = F,wait = T)
 # }
-
+ColumnNames <- readLines("./data/ColumnNames.txt")
 
 ## -- END --
 
@@ -41,7 +40,7 @@ function(input, output,session) {
     observeEvent(input$reset_input, {
       updateNumericInput(session, "size", value = 100)
       updateTextInput(session, "tissue", value = "all")
-      updateSearchInput(session,"Search", value = "", trigger = T)
+      shinyWidgets::updateSearchInput(session,"Search", value = "", trigger = T)
     })
     observeEvent(RunAnalysis(),{
       searchTerm <- toupper(input$Search)
@@ -50,22 +49,24 @@ function(input, output,session) {
       if(searchTerm == ""){
         command <- ""
         if(targetTissue != "all"){
+          print(paste(searchTerm, plotSize, targetTissue, command, sep=" | "))
+          DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
+                                  sep = ";",
+                                  header = F,
+                                  nrows = plotSize,
+                                  stringsAsFactors = F,
+                                  showProgress = F)
+          colnames(DF) = ColumnNames[1:ncol(DF)]
           output$table <- renderTable(DF[1:plotSize, c(1,2,3)])
-          DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
-                                  sep = ";",
-                                  header = F,
-                                  col.names = readLines("./data/ColumnNames.txt")[1:3],
-                                  nrows = plotSize,
-                                  stringsAsFactors = F,
-                                  showProgress = F)
         } else {
+          print(paste(searchTerm, plotSize, targetTissue, command, sep=" | "))
           DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
                                   sep = ";",
                                   header = F,
-                                  col.names = readLines("./data/ColumnNames.txt"),
                                   nrows = plotSize,
                                   stringsAsFactors = F,
                                   showProgress = F)
+          colnames(DF) = ColumnNames[1:ncol(DF)]
           output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
         }
         plotSize <- min(plotSize,nrow(DF), na.rm = T)
@@ -108,14 +109,14 @@ function(input, output,session) {
             coord_polar(theta = "y",
                         direction = -1)
           
-        ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID,-counts),
+        ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
                                                   y=counts))+
           geom_col(fill="#ff5e19",
                    color=NA)+
           ylab("Number of somatic mutations")+
-          xlab(paste0("Mutations (n=",plotSize,")"))+
+          xlab(paste0("Mutations (n=", plotSize, ")"))+
           theme_bar_plot+
-          scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),
+          scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
                              expand = c(0,0))
         
         plotObject1 <-  gridExtra::grid.arrange(ggBar,
@@ -151,10 +152,10 @@ function(input, output,session) {
           DF <- data.table::fread(file = resultsFile,
                                   sep = ";",
                                   header = F,
-                                  col.names = readLines("./data/ColumnNames.txt")[1:3],
                                   nrows = plotSize,
                                   stringsAsFactors = F,
                                   showProgress = F)
+          colnames(DF) = ColumnNames[1:ncol(DF)]
           file.remove(resultsFile) # removes the result file after reading the data
           resultsFile <- ""
           plotSize <- min(c(plotSize,nrow(DF)),na.rm = T)
@@ -210,14 +211,14 @@ function(input, output,session) {
               coord_polar(theta = "y",
                           direction = -1)
             
-            ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID,-counts),
+            ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
                                                       y=counts))+
               geom_col(fill="#ff5e19",
                        color=NA)+
               ylab("Number of somatic mutations")+
-              xlab(paste0("Mutations (n=",plotSize,")"))+
+              xlab(paste0("Mutations (n=", plotSize, ")"))+
               theme_bar_plot+
-              scale_y_continuous(limits = c(0,max(DF$counts[1:plotSize])),expand = c(0,0))
+              scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), expand = c(0, 0))
             
             plotObject1 <-  gridExtra::grid.arrange(ggBar,
                                                     ggPie,
