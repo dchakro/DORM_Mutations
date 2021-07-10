@@ -48,23 +48,16 @@ function(input, output,session) {
       targetTissue <- input$tissue
       if(searchTerm == ""){
         command <- ""
-        if(targetTissue != "all"){
-          DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
+        DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
                                   sep = ";",
                                   header = F,
                                   nrows = plotSize,
                                   stringsAsFactors = F,
                                   showProgress = F)
           colnames(DF) = ColumnNames[1:ncol(DF)]
+        if(targetTissue != "all"){
           output$table <- renderTable(DF[1:plotSize, c(1,2,3)])
         } else {
-          DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
-                                  sep = ";",
-                                  header = F,
-                                  nrows = plotSize,
-                                  stringsAsFactors = F,
-                                  showProgress = F)
-          colnames(DF) = ColumnNames[1:ncol(DF)]
           output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
         }
         plotSize <- min(plotSize,nrow(DF), na.rm = T)
