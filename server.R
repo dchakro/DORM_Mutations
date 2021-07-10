@@ -49,7 +49,6 @@ function(input, output,session) {
       if(searchTerm == ""){
         command <- ""
         if(targetTissue != "all"){
-          print(paste(searchTerm, plotSize, targetTissue, command, sep=" | "))
           DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
                                   sep = ";",
                                   header = F,
@@ -59,7 +58,6 @@ function(input, output,session) {
           colnames(DF) = ColumnNames[1:ncol(DF)]
           output$table <- renderTable(DF[1:plotSize, c(1,2,3)])
         } else {
-          print(paste(searchTerm, plotSize, targetTissue, command, sep=" | "))
           DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
                                   sep = ";",
                                   header = F,
@@ -167,14 +165,15 @@ function(input, output,session) {
           
           DF[,mutsID := paste0(Gene,Mutation,sep="_")]
           pie_table_all <- DF[,.(count=sum(counts)), by = Gene]
+          threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
           
           if(length(pie_table_all$Gene) == 1){
             pie_table <- pie_table_all
             sliceColors <- viridis::plasma(length(pie_table$Gene),direction = 1)
-            names(sliceColors) <- pie_table$Gene            
+            names(sliceColors) <- pie_table$Gene
+            threshold <- 1
           } else {
             setorder(pie_table_all, -count, Gene)
-            threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
             pie_table <- pie_table_all[1:threshold, ]
             pie_table <-
               data.table::rbindlist(l = list(pie_table, list("Others", sum(
