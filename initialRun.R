@@ -1,6 +1,8 @@
-rm(list=ls())
+library(data.table)
+rm(list=ls());gc()
 # -- Create essential files (initial run)
-DF <- readRDS("./data/20210603.FrequencyMutations.byTissue.RDS")
+DF <- readRDS("./data/20210709.FrequencyByMutation.RDS")
+DF <- DF[, replace(.SD, .SD == 0, NA)]
 write(colnames(DF),file = "./data/ColumnNames.txt",ncolumns = 1)
 message("Writing RDS as CSV")
 write.table(x = DF,file = "./data/RAW_DATA.csv",col.names = F,row.names = F,sep = ";",quote = F)
@@ -14,11 +16,12 @@ dir.create("./data/tissue")
 file.copy("./data/RAW_DATA.csv","./data/tissue/all.csv")
 
 writeTissueCSV <- function(tissue){
-  sub <- na.omit(DF[,c(1,2,which(colnames(DF) == tissue))])
-  sub <- sub[order(sub[,3],decreasing = T),]
+  idx <- c(1,2, which(colnames(DF) == tissue))
+  subDF <- data.table:::na.omit.data.table(DF[,..idx])
+  setorderv(subDF, c(colnames(subDF)[3],"Gene","Mutation"), order = c(-1,1,1)) 
   outfile <- paste0("./data/tissue/",tissue,".csv")
   message(paste("Writing",outfile))
-  write.table(x = sub,
+  write.table(x = subDF,
               file = outfile,
               col.names = F,
               row.names = F,
