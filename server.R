@@ -33,8 +33,6 @@ theme_bar_plot=theme(axis.line = element_line(colour = "black",
                                                face="italic"))
 
 
-# colnames(DF)[3]  <- "Total Cases"
-# colnames(DF)[4] <- "Number of mutations in different tissues"
 function(input, output,session) {
   RunAnalysis <- reactive({list(input$Search, input$size, input$tissue)})
     observeEvent(input$reset_input, {
@@ -64,45 +62,8 @@ function(input, output,session) {
          
         DF[,mutsID := paste0(Gene,Mutation,sep="_")]
         
-        pie_table_all <- DF[,.(count=sum(counts)), by = Gene]
-        setorder(pie_table_all, -count, Gene)
-        threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
-        pie_table <- pie_table_all[1:threshold, ]
-        pie_table <-
-          data.table::rbindlist(l = list(pie_table, list("Others", sum(
-            pie_table_all[(threshold + 1):nrow(pie_table_all), "count"], na.rm = T
-          ))))
-        
-        rm(pie_table_all);gc()
-        sliceColors <- rep(NA, length(pie_table$Gene))
-        idx <- which(pie_table$Gene == "Others")
-        sliceColors[idx] <- "#c7c7c7"
-        sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
-        names(sliceColors) <- pie_table$Gene
-        
         output$plot <- renderPlot({
-          ggPie <- ggplot(pie_table, aes(x="",
-                                         y=count,
-                                         fill=reorder(Gene,-count))) +
-            geom_bar(stat="identity",
-                     width=1,
-                     color="white") + 
-            theme_void() + 
-            scale_fill_manual(values= sliceColors) + 
-            theme(legend.position="right",
-                  legend.text=element_text(family="serif",
-                                           size=12),
-                  legend.key.size = unit(0.5, "lines")) + 
-            guides(fill = guide_legend(title = "Genes", 
-                                       title.position = "top", 
-                                       byrow = T, 
-                                       nrow = (threshold+1),
-                                       title.theme = element_text(family="serif", 
-                                                                  face = "italic", 
-                                                                  angle = 0)))+ 
-            coord_polar(theta = "y",
-                        direction = -1)
-          
+        overall_percentage_bar <- readRDS(paste0("./data/bar_with_others/",targetTissue,".RDS"))
         ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
                                                   y=counts))+
           geom_col(fill="#ff5e19",
@@ -114,7 +75,7 @@ function(input, output,session) {
                              expand = c(0,0))
         
         plotObject1 <-  gridExtra::grid.arrange(ggBar,
-                                                ggPie,
+                                                overall_percentage_bar,
                                                 ncol=2,
                                                 nrow=1,
                                                 widths = c(2, 2))
