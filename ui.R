@@ -8,19 +8,9 @@ tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
 	titlePanel(title="",windowTitle = "Hotspot Mutations"),
-  h1(id="pageTitle","Frequency of Mutations in COSMIC v94"),
+  h1(id="pageTitle","Recurrent Mutations in Cancer [COSMIC v94]"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
-	p('This website sources data from', 
-		a(href="https://cosmic-blog.sanger.ac.uk/cosmic-release-v94/",
-		'COSMIC database'),
-		'(v94, released 2021/05/28) and presents the frequency of somatic mutations in different genes.'
-	),
-  p('Visit ',
-       a(href="https://cancer.sanger.ac.uk/cosmic",
-       'COSMIC'),
-       '- the Catalogue Of Somatic Mutations In Cancer, world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
-    ),
-    plotOutput('plot'),
+	plotOutput('plot'),
     p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
     strong(span("KRAS G12C",style='color:#ff5e19')) ,
     align="left"),
@@ -63,6 +53,16 @@ fluidPage(
                ,offset = 1)
         ),
   tableOutput("table"),
-	p('Note: NS = Not specified')
-  
+	p('Note: NS = Not specified'),
+	strong("Information:"),
+	p(
+	  'This website hosts processed data that is available at the',
+	  a(href = "https://cosmic-blog.sanger.ac.uk/cosmic-release-v94/",
+	    'COSMIC database'),
+	  '(v94, released 2021/05/28). We present the frequency of recurrent somatic mutations in different genes.',
+	  'Visit the',
+	  a(href = "https://cancer.sanger.ac.uk/cosmic",
+	    'Catalogue Of Somatic Mutations In Cancer'),
+	  '- world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
+	)
 )
