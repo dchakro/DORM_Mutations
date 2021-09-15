@@ -7,8 +7,8 @@ tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
-	titlePanel(title="",windowTitle = "Hotspot Mutations"),
-  h1(id="pageTitle","Recurrent Mutations in Cancer [COSMIC v94]"),
+	titlePanel(h1(id="pageTitle","— Hotspot Explorer —",align="center"),windowTitle = "Hotspot Mutations"),
+	h2(id="pageTitle","Browse recurrent mutations in human cancers.",align="center"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	plotOutput('plot'),
     p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
