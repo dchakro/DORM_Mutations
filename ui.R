@@ -10,6 +10,7 @@ fluidPage(
 	titlePanel(h1(id="pageTitle","— Hotspot Explorer —",align="center"),windowTitle = "Hotspot Mutations"),
 	h2(id="pageTitle","Browse recurrent mutations in human cancers.",align="center"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
+	h3(br()),
 	plotOutput('plot'),
     p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
     strong(span("KRAS G12C",style='color:#ff5e19')) ,
