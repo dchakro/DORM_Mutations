@@ -12,16 +12,13 @@ fluidPage(
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	h3(br()),
 	plotOutput('plot'),
-    p('Try searching for:', strong(span("BRAF",style='color:#ff5e19')), '/' ,
-    strong(span("KRAS G12C",style='color:#ff5e19')) ,
-    align="left"),
     fluidRow(
         column(3,
                shinyWidgets::searchInput(
                   inputId = "Search",
-                  label = "Type search term(s):",
+                  label = "Enter search term(s):",
                   value="",
-                  placeholder = "KRAS G12",
+                  placeholder = "e.g. KRAS G12",
                   btnSearch = icon("search"),
                   btnReset = icon("remove"),
                   width = "100%")
@@ -53,6 +50,9 @@ fluidPage(
                )
                ,offset = 1)
         ),
+	p(strong("Tip:"),'Use , or ; between gene names e.g.', strong(span("BRAF, KRAS",style='color:#ff5e19')), 'and space with Gene-Mutation pair, e.g.' ,
+	  strong(span("KRAS G12",style='color:#ff5e19')),
+	  align="left"),
   tableOutput("table"),
 	p('Note: NS = Not specified'),
 	strong("Information:"),

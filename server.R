@@ -81,7 +81,7 @@ function(input, output,session) {
                                                 widths = c(2, 2))
         })
     } else {
-        searchTerm <- gsub("[,;]*[[:space:]]+", "|", searchTerm, fixed = F)
+        searchTerm <- gsub("[,;]+[[:space:]]+", "|", searchTerm, fixed = F)
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
           resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
           searchTerm <- unlist(strsplit(x = searchTerm, 
@@ -105,94 +105,138 @@ function(input, output,session) {
         }
         if(command != "" ){
           system(command = command, intern = F, wait=T)
-          DF <- data.table::fread(file = resultsFile,
-                                  sep = ";",
-                                  header = F,
-                                  nrows = plotSize,
-                                  stringsAsFactors = F,
-                                  showProgress = F)
-          colnames(DF) = ColumnNames[1:ncol(DF)]
-          file.remove(resultsFile) # removes the result file after reading the data
-          resultsFile <- ""
-          plotSize <- min(c(plotSize,nrow(DF)),na.rm = T)
-          if(targetTissue != "all"){
-            output$table <- renderTable(DF[1:plotSize, c(1,2,3)])
+          if(file.info(resultsFile)$size == 0){ # if file is empty
+            file.remove(resultsFile) # delete the empty result file
+            resultsFile <- ""
+            DF <- data.table::fread(
+              file = "./data/error.txt",
+              sep = ";",
+              header = F,
+              nrows = plotSize,
+              stringsAsFactors = F,
+              showProgress = F
+            )
+            # colnames(DF) = ColumnNames[1:ncol(DF)]
+            output$table <- renderTable(DF[, c(1,2,3,4)])
+            output$plot <- renderPlot({
+              ggplot(data = data.frame()) +
+                geom_point() +
+                xlim(0, 10) +
+                ylim(0, 10) +
+                theme_void() +
+                annotate(
+                  "segment",
+                  x = 2.5,
+                  xend = 7.5,
+                  y = 2.5,
+                  yend = 7.5,
+                  colour = "red",
+                  size= 1.5
+                ) + annotate(
+                  geom = "text",
+                  x = 4,
+                  y = 5.5,
+                  size=5,
+                  label = paste0("Searching: ", toupper(input$Search))
+                ) + annotate(
+                  geom = "text",
+                  x = 5.5,
+                  y = 4,
+                  size=5,
+                  label = "Returns an Empty Table."
+                )
+            })
+            
           } else {
-            output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
-          }
-          
-          DF[,mutsID := paste0(Gene,Mutation,sep="_")]
-          pie_table_all <- DF[,.(count=sum(counts)), by = Gene]
-          threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
-          
-          if(length(pie_table_all$Gene) == 1){
-            pie_table <- pie_table_all
-            sliceColors <- viridis::plasma(length(pie_table$Gene),direction = 1)
-            names(sliceColors) <- pie_table$Gene
-            threshold <- 1
-          } else {
-            setorder(pie_table_all, -count, Gene)
-            pie_table <- pie_table_all[1:threshold, ]
-            if(threshold < nrow(pie_table_all)){
-              pie_table <-
-                data.table::rbindlist(l = list(pie_table, list("Others", sum(
-                  pie_table_all[(threshold + 1):nrow(pie_table_all), "count"], na.rm = T
-                ))))  
+            DF <- data.table::fread(file = resultsFile,
+                                    sep = ";",
+                                    header = F,
+                                    nrows = plotSize,
+                                    stringsAsFactors = F,
+                                    showProgress = F)
+            colnames(DF) = ColumnNames[1:ncol(DF)]
+            file.remove(resultsFile) # removes the result file after reading the data
+            resultsFile <- ""
+            plotSize <- min(c(plotSize,nrow(DF)),na.rm = T)
+            if(targetTissue != "all"){
+              output$table <- renderTable(DF[1:plotSize, c(1,2,3)])
             } else {
-              pie_table <-
-                data.table::rbindlist(l = list(pie_table, list("Others", 0 )))  
+              output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
             }
             
-            rm(pie_table_all);gc()
-            sliceColors <- rep(NA, length(pie_table$Gene))
-            idx <- which(pie_table$Gene == "Others")
-            sliceColors[idx] <- "#c7c7c7"
-            sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
-            names(sliceColors) <- pie_table$Gene
+            DF[,mutsID := paste0(Gene,Mutation,sep="_")]
+            pie_table_all <- DF[,.(count=sum(counts)), by = Gene]
+            threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
+            
+            if(length(pie_table_all$Gene) == 1){
+              pie_table <- pie_table_all
+              sliceColors <- viridis::plasma(length(pie_table$Gene),direction = 1)
+              names(sliceColors) <- pie_table$Gene
+              threshold <- 1
+            } else {
+              setorder(pie_table_all, -count, Gene)
+              pie_table <- pie_table_all[1:threshold, ]
+              if(threshold < nrow(pie_table_all)){
+                pie_table <-
+                  data.table::rbindlist(l = list(pie_table, list("Others", sum(
+                    pie_table_all[(threshold + 1):nrow(pie_table_all), "count"], na.rm = T
+                  ))))  
+              } else {
+                pie_table <-
+                  data.table::rbindlist(l = list(pie_table, list("Others", 0 )))  
+              }
+              
+              rm(pie_table_all);gc()
+              sliceColors <- rep(NA, length(pie_table$Gene))
+              idx <- which(pie_table$Gene == "Others")
+              sliceColors[idx] <- "#c7c7c7"
+              sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
+              names(sliceColors) <- pie_table$Gene
+            }
+            
+            output$plot <- renderPlot({
+              ggPie <- ggplot(pie_table, aes(x="",
+                                             y=count,
+                                             fill=reorder(Gene,-count)))+
+                geom_bar(stat="identity", 
+                         width=1, 
+                         color="white") + 
+                theme_void() + 
+                scale_fill_manual(values= sliceColors) + 
+                theme(legend.position="right",
+                      legend.text=element_text(family="serif",
+                                               size=12),
+                      legend.key.size = unit(0.5, "lines")) + 
+                guides(fill = guide_legend(title = "Genes", 
+                                           title.position = "top", 
+                                           byrow = T, 
+                                           nrow = (threshold+1),
+                                           title.theme = element_text(family="serif", 
+                                                                      face = "italic", 
+                                                                      angle = 0)))+ 
+                coord_polar(theta = "y",
+                            direction = -1)
+              
+              ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
+                                                        y=counts))+
+                geom_col(fill="#ff5e19",
+                         color=NA)+
+                ylab("Number of somatic mutations")+
+                xlab(paste0("Mutations (n=", plotSize, ")"))+
+                theme_bar_plot+
+                scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
+                                   expand = c(0, 0))
+              
+              plotObject1 <-  gridExtra::grid.arrange(ggBar,
+                                                      ggPie,
+                                                      ncol=2,
+                                                      nrow=1,
+                                                      widths = c(2, 2))
+            })
           }
-          
-          output$plot <- renderPlot({
-            ggPie <- ggplot(pie_table, aes(x="",
-                                           y=count,
-                                           fill=reorder(Gene,-count)))+
-              geom_bar(stat="identity", 
-                       width=1, 
-                       color="white") + 
-              theme_void() + 
-              scale_fill_manual(values= sliceColors) + 
-              theme(legend.position="right",
-                    legend.text=element_text(family="serif",
-                                             size=12),
-                    legend.key.size = unit(0.5, "lines")) + 
-              guides(fill = guide_legend(title = "Genes", 
-                                         title.position = "top", 
-                                         byrow = T, 
-                                         nrow = (threshold+1),
-                                         title.theme = element_text(family="serif", 
-                                                                    face = "italic", 
-                                                                    angle = 0)))+ 
-              coord_polar(theta = "y",
-                          direction = -1)
-            
-            ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
-                                                      y=counts))+
-              geom_col(fill="#ff5e19",
-                       color=NA)+
-              ylab("Number of somatic mutations")+
-              xlab(paste0("Mutations (n=", plotSize, ")"))+
-              theme_bar_plot+
-              scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
-                                 expand = c(0, 0))
-            
-            plotObject1 <-  gridExtra::grid.arrange(ggBar,
-                                                    ggPie,
-                                                    ncol=2,
-                                                    nrow=1,
-                                                    widths = c(2, 2))
-          })
         }
       }
-})
+  })
     session$onSessionEnded(function() {
         gc()
         stopApp()

@@ -1,0 +1,2 @@
+ERROR;404;BLANK;Your search query returned an empty table. Check your query for spellings, or errors in delimiters, etc. Read the documentation for formulating correct queries.
+HELP;911;x;If you are still experiencing troubles contact us for help with your search query.
