@@ -81,6 +81,7 @@ function(input, output,session) {
                                                 widths = c(2, 2))
         })
     } else {
+        searchTerm <- gsub("[,;]*[[:space:]]+", "|", searchTerm, fixed = F)
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
           resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
           searchTerm <- unlist(strsplit(x = searchTerm, 
