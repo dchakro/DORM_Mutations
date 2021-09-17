@@ -7,6 +7,13 @@ tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
+	a('Home', href="https://eleniuslabtools.utu.fi/main/HotspotExplorer.html",style='color:#EE5F21'),
+	HTML('&emsp;'),
+	a('Explore: Residues', href="https://eleniuslabtools.utu.fi/tools/HotspotExplorer/Residues/",style='color:#EE5F21'),
+	HTML('&emsp;'),
+	a('Documentation', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html",style='color:#EE5F21'),
+	HTML('&emsp;'),
+	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html#faq",style='color:#EE5F21'),
 	titlePanel(h1(id="pageTitle","— Hotspot Explorer —",align="center"),windowTitle = "Hotspot Mutations"),
 	h2(id="pageTitle","Browse recurrent mutations in human cancers.",align="center"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
@@ -50,8 +57,8 @@ fluidPage(
                )
                ,offset = 1)
         ),
-	p(strong("Tip:"),'Use , or ; between gene names e.g.', strong(span("BRAF, KRAS",style='color:#ff5e19')), 'and space with Gene-Mutation pair, e.g.' ,
-	  strong(span("KRAS G12",style='color:#ff5e19')),
+	p(strong("Tip:"),'Use , or ; between gene names e.g.', strong(span("BRAF, KRAS",style='color:#EE5F21')), 'and space with Gene-Mutation pair, e.g.' ,
+	  strong(span("KRAS G12",style='color:#EE5F21')),
 	  align="left"),
   tableOutput("table"),
 	p('Note: NS = Not specified'),
