@@ -11,15 +11,15 @@ fluidPage(
 	HTML('&emsp;'),
 	a('Explore: Residues', href="https://eleniuslabtools.utu.fi/tools/HotspotExplorer/Residues/",style='color:#EE5F21'),
 	HTML('&emsp;'),
-	a('Documentation', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html",style='color:#EE5F21'),
+	a('Documentation', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html",style='color:#EE5F21',target="_blank"),
 	HTML('&emsp;'),
-	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html#faq",style='color:#EE5F21'),
+	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html#faq",style='color:#EE5F21',target="_blank"),
 	titlePanel(h1(id="pageTitle","— Hotspot Explorer —",align="center"),windowTitle = "Hotspot Mutations"),
 	h2(id="pageTitle","Browse recurrent mutations in human cancers.",align="center"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	h3(br()),
 	plotOutput('plot'),
-	a('Advanced search'),
+	a('Advanced search', href="https://eleniuslabtools.utu.fi/main/docs/AdvancedSearch.html",target="_blank"),
     fluidRow(
         column(3,
                shinyWidgets::searchInput(
