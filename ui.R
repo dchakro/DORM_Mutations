@@ -19,6 +19,7 @@ fluidPage(
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	h3(br()),
 	plotOutput('plot'),
+	a('Advanced search'),
     fluidRow(
         column(3,
                shinyWidgets::searchInput(
@@ -57,7 +58,7 @@ fluidPage(
                )
                ,offset = 1)
         ),
-	p(strong("Tip:"),'Use , or ; between gene names e.g.', strong(span("BRAF, KRAS",style='color:#EE5F21')), 'and space with Gene-Mutation pair, e.g.' ,
+	p(strong("Tip:"),'Use , or ; to separate gene names e.g.', strong(span("BRAF, KRAS",style='color:#EE5F21')), 'and space with Gene-Mutation pair, e.g.' ,
 	  strong(span("KRAS G12",style='color:#EE5F21')),
 	  align="left"),
   tableOutput("table"),
