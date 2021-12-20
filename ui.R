@@ -7,13 +7,13 @@ tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
-	a('Home', href="https://eleniuslabtools.utu.fi/main/HotspotExplorer.html",style='color:#EE5F21'),
+	a('Home', href="https://eleniuslabtools.utu.fi",style='color:#EE5F21'),
 	HTML('&emsp;'),
-	a('Explore: Residues', href="https://eleniuslabtools.utu.fi/tools/HotspotExplorer/Residues/",style='color:#EE5F21'),
+	a('Browse: Residues', href="https://eleniuslabtools.utu.fi/tools/HotspotExplorer/Residues/",style='color:#EE5F21'),
 	HTML('&emsp;'),
 	a('Documentation', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html",style='color:#EE5F21',target="_blank"),
 	HTML('&emsp;'),
-	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html#faq",style='color:#EE5F21',target="_blank"),
+	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/Hotspots-FAQ.html",style='color:#EE5F21',target="_blank"),
 	titlePanel(h1(id="pageTitle","— Hotspot Explorer —",align="center"),windowTitle = "Hotspot Mutations"),
 	h2(id="pageTitle","Browse recurrent mutations in human cancers.",align="center"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
