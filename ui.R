@@ -7,7 +7,7 @@ tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
-	a('Home', href="https://eleniuslabtools.utu.fi",style='color:#EE5F21'),
+	a('Home', href="https://eleniuslabtools.utu.fi",style='color:#EE5F21',target="_blank"),
 	HTML('&emsp;'),
 	a('Browse: Residues', href="https://eleniuslabtools.utu.fi/tools/HotspotExplorer/Residues/",style='color:#EE5F21'),
 	HTML('&emsp;'),
