@@ -3,6 +3,8 @@ rm(list=ls());gc()
 # -- Create essential files (initial run)
 DF <- readRDS("./data/20210709.FrequencyByMutation.RDS")
 DF <- DF[, replace(.SD, .SD == 0, NA)]
+DF[,Mutation:=gsub("X","Ter",Mutation)]
+
 write(colnames(DF),file = "./data/ColumnNames.txt",ncolumns = 1)
 message("Writing RDS as CSV")
 write.table(x = DF,file = "./data/RAW_DATA.csv",col.names = F,row.names = F,sep = ";",quote = F)

@@ -5,6 +5,7 @@ tissues <- readLines("./data/ColumnNames.txt",warn = F)
 '%nin%' <- Negate('%in%')
 tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
+function(request){
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
 	a('Home', href="https://eleniuslabtools.utu.fi",style='color:#EE5F21',target="_blank"),
@@ -14,8 +15,8 @@ fluidPage(
 	a('Documentation', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html",style='color:#EE5F21',target="_blank"),
 	HTML('&emsp;'),
 	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/Hotspots-FAQ.html",style='color:#EE5F21',target="_blank"),
-	titlePanel(h1(id="pageTitle","— Hotspot Explorer —",align="center"),windowTitle = "Hotspot Mutations"),
-	h2(id="pageTitle","Browse recurrent mutations in human cancers.",align="center"),
+	titlePanel(h1(id="pageTitle","DORM : Database of Recurrent Mutations",align="center"),windowTitle = "Hotspot Mutations"),
+	h3(id="pageTitle","— Browse recurrent mutations in human cancers —",align="center"),
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
 	h3(br()),
 	plotOutput('plot'),
@@ -28,7 +29,7 @@ fluidPage(
                   value="",
                   placeholder = "e.g. KRAS G12",
                   btnSearch = icon("search"),
-                  btnReset = icon("remove"),
+                  btnReset = icon("times"),
                   width = "100%")
         ),
         column(2,
@@ -58,11 +59,14 @@ fluidPage(
                )
                ,offset = 1)
         ),
-	p(strong("Tip:"),'Use , or ; to separate gene names e.g.', strong(span("BRAF, KRAS",style='color:#EE5F21')), 'and space with Gene-Mutation pair, e.g.' ,
+        bookmarkButton(icon = icon("link"),
+        label="Generate link", 
+        title = "Get a direct link to save and share your search. The settings and search terms are anonymously saved to the server."),
+	p(strong("Tip:"),'Use , or ; to separate gene names e.g.', strong(span("BRAF, KRAS",style='color:#EE5F21')), 'and space in a Gene-Mutation pair, e.g.' ,
 	  strong(span("KRAS G12",style='color:#EE5F21')),
 	  align="left"),
   tableOutput("table"),
-	p('Note: NS = Not specified'),
+	p('Note: Ter = Termination i.e., STOP codon. NS = Not specified'),
 	strong("Information:"),
 	p(
 	  'This website hosts processed data that is available at the',
@@ -75,3 +79,4 @@ fluidPage(
 	  '- world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
 	)
 )
+}
