@@ -8,14 +8,14 @@ tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 function(request){
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
-	a('Home', href="https://eleniuslabtools.utu.fi",style='color:#EE5F21',target="_blank"),
+	a('Lab Home', href="https://eleniuslabtools.utu.fi",style='color:#EE5F21',target="_blank"),
 	HTML('&emsp;'),
-	a('Browse: Residues', href="https://eleniuslabtools.utu.fi/tools/HotspotExplorer/Residues/",style='color:#EE5F21'),
+	a('Browse: Residues', href="https://eleniuslabtools.utu.fi/tools/DORM/Residues/",style='color:#EE5F21'),
 	HTML('&emsp;'),
-	a('Documentation', href="https://eleniuslabtools.utu.fi/main/docs/HotspotExplorer.html",style='color:#EE5F21',target="_blank"),
+	a('Documentation', href="https://eleniuslabtools.utu.fi/main/docs/DORM.html",style='color:#EE5F21',target="_blank"),
 	HTML('&emsp;'),
-	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/Hotspots-FAQ.html",style='color:#EE5F21',target="_blank"),
-	titlePanel(h1(id="pageTitle","— DORM —",align="center"),windowTitle = "Hotspot Mutations"),
+	a('FAQ', href="https://eleniuslabtools.utu.fi/main/docs/DORM-FAQ.html",style='color:#EE5F21',target="_blank"),
+	titlePanel(h1(id="pageTitle","— DORM —",align="center"),windowTitle = "DORM - Elenius Lab Tools"),
   	h4(id="pageTitle","Database of Recurrent Mutations",align="center"),
   
    tags$style(HTML("#pageTitle{color: #ff5e19;}")),
@@ -66,7 +66,7 @@ fluidPage(
                 label="Generate link", 
                 title = "Get a direct link to save and share your search. The settings and search terms are anonymously saved to the server."),
   hr(),
-	p(strong("Tip:"),'You can use , or ; to query multiple genes e.g.', strong(span("BRAF, KRAS, EGFR",style='color:#EE5F21')),
+	p(strong("Tip:"),'You can use a comma ( , ) or a semicolon ( ; ) to query multiple genes e.g.', strong(span("BRAF, KRAS, EGFR",style='color:#EE5F21')),
 	  align="left"),
   hr(),
   tableOutput("table"),
