@@ -5,6 +5,7 @@ tissues <- readLines("./data/ColumnNames.txt",warn = F)
 '%nin%' <- Negate('%in%')
 tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
 
+function(request){
 fluidPage(
 	theme = shinythemes::shinytheme("united"),
 	a('Home', href="https://eleniuslabtools.utu.fi",style='color:#EE5F21',target="_blank"),
@@ -58,6 +59,9 @@ fluidPage(
                )
                ,offset = 1)
         ),
+        bookmarkButton(icon = icon("link"),
+        label="Generate link", 
+        title = "Get a direct link to save and share your search. The settings and search terms are anonymously saved to the server."),
 	p(strong("Tip:"),'Use , or ; to separate gene names e.g.', strong(span("BRAF, KRAS",style='color:#EE5F21')), 'and space in a Gene-Mutation pair, e.g.' ,
 	  strong(span("KRAS G12",style='color:#EE5F21')),
 	  align="left"),
@@ -75,3 +79,4 @@ fluidPage(
 	  '- world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
 	)
 )
+}
