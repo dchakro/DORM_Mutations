@@ -88,12 +88,12 @@ function(input, output,session) {
                                         split = " ",
                                         fixed = T),
                                use.names = F)
-          command <- paste0("egrep '",
+          command <- paste0("egrep -i '",
                             searchTerm[1],
                             "' ./data/tissue/",
                             targetTissue,
                             ".csv | ",
-                            paste0("egrep '",
+                            paste0("egrep -i '",
                                    searchTerm[2:length(searchTerm)],
                                    "'",
                                    collapse = " | "),
@@ -101,7 +101,7 @@ function(input, output,session) {
                             resultsFile)
         } else {
           resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
-          if(searchTerm != "") command = paste0("egrep '", searchTerm, "' ./data/tissue/", targetTissue, ".csv >| ", resultsFile)
+          if(searchTerm != "") command = paste0("egrep -i '", searchTerm, "' ./data/tissue/", targetTissue, ".csv >| ", resultsFile)
         }
         if(command != "" ){
           system(command = command, intern = F, wait=T)
