@@ -64,7 +64,7 @@ fluidPage(
   # p("Browse recurrent mutations identified from human cancer samples with genome-wide screening."),
   bookmarkButton(icon = icon("link"),
                 label="Generate link", 
-                title = "Get a direct link to save and share your search."),
+                title = "Get a direct link to your search."),
 	              # The settings and search terms are anonymously saved to the server.
   hr(),
 	p(strong("Tip:"),'You can use a comma ( , ) or a semicolon ( ; ) to query multiple genes e.g.', strong(span("BRAF, KRAS, EGFR",style='color:#EE5F21')),
