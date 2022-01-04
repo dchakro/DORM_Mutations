@@ -71,17 +71,20 @@ fluidPage(
 	  align="left"),
   hr(),
   tableOutput("table"),
-	p('Note: Ter = Termination i.e., STOP codon. NS = Not specified'),
-	strong("Information:"),
-	p(
-	  'This website hosts processed data that is available at the',
-	  a(href = "https://cosmic-blog.sanger.ac.uk/cosmic-release-v94/",
-	    'COSMIC database'),
-	  '(v94, released 2021/05/28). We present the frequency of recurrent somatic mutations in different genes.',
-	  'Visit the',
-	  a(href = "https://cancer.sanger.ac.uk/cosmic",
-	    'Catalogue Of Somatic Mutations In Cancer'),
-	  '- world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
-	)
+	hr(),
+	strong("Abbreviations:"),
+	pre("Ter = Termination i.e. STOP codon \nins / del = insertion / deletion\ndup / fs= duplication / frameshift\nfsTer[n:integer] = frameshift causes truncation after n amino acids\nNS = Not specified"),
+	hr() # ,
+	# strong("Information:"),
+	# p(
+	#   'This website hosts processed data that is available at the',
+	#   a(href = "https://cosmic-blog.sanger.ac.uk/cosmic-release-v94/",
+	#     'COSMIC database'),
+	#   '(v94, released 2021/05/28). We present the frequency of recurrent somatic mutations in different genes.',
+	#   'Visit the',
+	#   a(href = "https://cancer.sanger.ac.uk/cosmic",
+	#     'Catalogue Of Somatic Mutations In Cancer'),
+	#   '- world\'s largest and most comprehensive resource for exploring the somatic mutations identified from human cancers.'
+	# )
 )
 }
