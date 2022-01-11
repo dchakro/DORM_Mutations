@@ -3,7 +3,7 @@ library(shiny)
 
 tissues <- readLines("./data/ColumnNames.txt",warn = F)
 '%nin%' <- Negate('%in%')
-tissues <- tissues[tissues %nin% c("Gene","Mutation","counts","Frequency")]
+tissues <- tissues[tissues %nin% c("Protein","Mutation","counts","Frequency")]
 
 function(request){
 fluidPage(
@@ -67,7 +67,7 @@ fluidPage(
                 title = "Get a direct link to your search."),
 	              # The settings and search terms are anonymously saved to the server.
   hr(),
-	p(strong("Tip:"),'You can use a comma ( , ) or a semicolon ( ; ) to query multiple genes e.g.', strong(span("BRAF, KRAS, EGFR",style='color:#EE5F21')),
+	p(strong("Tip:"),'You can use a comma ( , ) or a semicolon ( ; ) to query multiple proteins e.g.', strong(span("BRAF, KRAS, EGFR",style='color:#EE5F21')),
 	  align="left"),
   hr(),
   tableOutput("table"),
@@ -80,7 +80,7 @@ fluidPage(
 	#   'This website hosts processed data that is available at the',
 	#   a(href = "https://cosmic-blog.sanger.ac.uk/cosmic-release-v94/",
 	#     'COSMIC database'),
-	#   '(v94, released 2021/05/28). We present the frequency of recurrent somatic mutations in different genes.',
+	#   '(v94, released 2021/05/28). We present the frequency of recurrent somatic mutations in different proteins.',
 	#   'Visit the',
 	#   a(href = "https://cancer.sanger.ac.uk/cosmic",
 	#     'Catalogue Of Somatic Mutations In Cancer'),

@@ -60,7 +60,7 @@ function(input, output,session) {
         }
         plotSize <- min(plotSize,nrow(DF), na.rm = T)
          
-        DF[,mutsID := paste0(Gene,Mutation,sep="_")]
+        DF[,mutsID := paste0(Protein,Mutation,sep="_")]
         
         output$plot <- renderPlot({
         overall_percentage_bar <- readRDS(paste0("./data/bar_with_others/",targetTissue,".RDS"))
@@ -164,17 +164,17 @@ function(input, output,session) {
               output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
             }
             
-            DF[,mutsID := paste0(Gene,Mutation,sep="_")]
-            pie_table_all <- DF[,.(count=sum(counts)), by = Gene]
-            threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Gene"), 20)
+            DF[,mutsID := paste0(Protein,Mutation,sep="_")]
+            pie_table_all <- DF[,.(count=sum(counts)), by = Protein]
+            threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Protein"), 20)
             
-            if(length(pie_table_all$Gene) == 1){
+            if(length(pie_table_all$Protein) == 1){
               pie_table <- pie_table_all
-              sliceColors <- viridis::plasma(length(pie_table$Gene),direction = 1)
-              names(sliceColors) <- pie_table$Gene
+              sliceColors <- viridis::plasma(length(pie_table$Protein),direction = 1)
+              names(sliceColors) <- pie_table$Protein
               threshold <- 1
             } else {
-              setorder(pie_table_all, -count, Gene)
+              setorder(pie_table_all, -count, Protein)
               pie_table <- pie_table_all[1:threshold, ]
               if(threshold < nrow(pie_table_all)){
                 pie_table <-
@@ -187,17 +187,17 @@ function(input, output,session) {
               }
               
               rm(pie_table_all);gc()
-              sliceColors <- rep(NA, length(pie_table$Gene))
-              idx <- which(pie_table$Gene == "Others")
+              sliceColors <- rep(NA, length(pie_table$Protein))
+              idx <- which(pie_table$Protein == "Others")
               sliceColors[idx] <- "#c7c7c7"
-              sliceColors[-idx] <- viridis::plasma(length(pie_table$Gene[-idx]),direction = 1)
-              names(sliceColors) <- pie_table$Gene
+              sliceColors[-idx] <- viridis::plasma(length(pie_table$Protein[-idx]),direction = 1)
+              names(sliceColors) <- pie_table$Protein
             }
             
             output$plot <- renderPlot({
               ggPie <- ggplot(pie_table, aes(x="",
                                              y=count,
-                                             fill=reorder(Gene,-count)))+
+                                             fill=reorder(Protein,-count)))+
                 geom_bar(stat="identity", 
                          width=1, 
                          color="white") + 
@@ -207,7 +207,7 @@ function(input, output,session) {
                       legend.text=element_text(family="serif",
                                                size=12),
                       legend.key.size = unit(0.5, "lines")) + 
-                guides(fill = guide_legend(title = "Genes", 
+                guides(fill = guide_legend(title = "Proteins", 
                                            title.position = "top", 
                                            byrow = T, 
                                            nrow = (threshold+1),
