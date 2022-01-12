@@ -200,8 +200,14 @@ function(input, output,session) {
               }
               
               sliceColors <- rep(NA, length(pie_table$Tissue))
-              idx <- which(pie_table$Tissue == "Others")
-              sliceColors[idx] <- "#c7c7c7"
+              idx <- na.exclude(c(which(pie_table$Tissue == "Others"),
+                       which(pie_table$Tissue == "NS")))
+              if(length(idx)==1){
+                sliceColors[idx] <- c("#0A0A0A")  
+              } else {
+                sliceColors[idx] <- c("#0A0A0A","#C7C7C7")
+              }
+              
               sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
               names(sliceColors) <- pie_table$Tissue
               
