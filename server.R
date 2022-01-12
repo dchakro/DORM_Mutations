@@ -168,11 +168,66 @@ function(input, output,session) {
             pie_table_all <- DF[,.(count=sum(counts)), by = Protein]
             threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Protein"), 20)
             
+            single_protein_flag <- F
             if(length(pie_table_all$Protein) == 1){
-              pie_table <- pie_table_all
-              sliceColors <- viridis::plasma(length(pie_table$Protein),direction = 1)
-              names(sliceColors) <- pie_table$Protein
-              threshold <- 1
+              # Just single gene in the search results
+              single_protein_flag <- T
+              
+              tissueFrequency_tmp <-
+                t(DF[, lapply(.SD, sum, na.rm = T), .SDcols = seq(5, ncol(DF) - 1)])
+              
+              tissueFrequency <- data.table(Tissue=dimnames(tissueFrequency_tmp)[[1]],
+                                            tissueFrequency_tmp)
+              rm(tissueFrequency_tmp)
+              setnames(tissueFrequency, "V1", "count")
+              tissueFrequency <- tissueFrequency[count != 0, ]
+              data.table::setorder(tissueFrequency, -count)
+              
+              threshold2 <- min(dim(tissueFrequency)[1], 15)
+              pie_table <- tissueFrequency[1:threshold2,]
+              if (threshold2 < nrow(tissueFrequency)) {
+                
+                pie_table <-
+                  data.table::rbindlist(l = list(pie_table, 
+                                                 list("Others", 
+                                                      sum(
+                    tissueFrequency[(threshold2 + 1):nrow(tissueFrequency), 
+                                    "count"], 
+                    na.rm = T))))  
+              } else {
+                pie_table <-
+                  data.table::rbindlist(l = list(pie_table, list("Others", 0 )))  
+              }
+              
+              sliceColors <- rep(NA, length(pie_table$Tissue))
+              idx <- which(pie_table$Tissue == "Others")
+              sliceColors[idx] <- "#c7c7c7"
+              sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
+              names(sliceColors) <- pie_table$Tissue
+              
+              ggPie_singleProtein <- ggplot(pie_table, aes(x="",
+                                             y=count,
+                                             fill=reorder(Tissue,-count)))+
+                geom_bar(stat="identity", 
+                         width=1, 
+                         color="white") + 
+                theme_void() + 
+                scale_fill_manual(values= sliceColors) + 
+                theme(legend.position="right",
+                      legend.text=element_text(family="serif",
+                                               size=12),
+                      legend.key.size = unit(0.5, "lines")) + 
+                guides(fill = guide_legend(title = paste0("Tissue (",
+                                                          unique(pie_table_all$Protein),
+                                                          ")"), 
+                                           title.position = "top", 
+                                           byrow = T, 
+                                           nrow = (threshold2+1),
+                                           title.theme = element_text(family="serif", 
+                                                                      face = "italic", 
+                                                                      angle = 0)))+ 
+                coord_polar(theta = "y",
+                            direction = -1)
             } else {
               setorder(pie_table_all, -count, Protein)
               pie_table <- pie_table_all[1:threshold, ]
@@ -227,11 +282,21 @@ function(input, output,session) {
                 scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
                                    expand = c(0, 0))
               
-              plotObject1 <-  gridExtra::grid.arrange(ggBar,
-                                                      ggPie,
-                                                      ncol=2,
-                                                      nrow=1,
-                                                      widths = c(2, 2))
+             if(single_protein_flag){
+               gridExtra::grid.arrange(ggBar,
+                                       ggPie_singleProtein,
+                                       ncol=2,
+                                       nrow=1,
+                                       widths = c(2, 2))
+               
+             } else {
+               gridExtra::grid.arrange(ggBar,
+                                       ggPie,
+                                       ncol=2,
+                                       nrow=1,
+                                       widths = c(2, 2))
+               
+             } 
             })
           }
         }
