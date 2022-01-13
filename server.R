@@ -182,6 +182,7 @@ function(input, output,session) {
               setnames(tissueFrequency, "V1", "count")
               tissueFrequency <- tissueFrequency[count != 0, ]
               data.table::setorder(tissueFrequency, -count)
+              tissueFrequency[,Tissue:=gsub("_"," ",Tissue)]
               
               threshold2 <- min(dim(tissueFrequency)[1], 15)
               pie_table <- tissueFrequency[1:threshold2,]
