@@ -67,9 +67,10 @@ function(input, output,session) {
         ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
                                                   y=counts))+
           geom_col(fill="#ff5e19",
-                   color=NA)+
+                   color=NA,
+                   width = 0.75)+
           ylab("Number of somatic mutations")+
-          xlab(paste0("Mutations (n=", plotSize, ")"))+
+          xlab(paste0("Mutations (n = ", plotSize, ")"))+
           theme_bar_plot+
           scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
                              expand = c(0,0))
@@ -282,9 +283,10 @@ function(input, output,session) {
               ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
                                                         y=counts))+
                 geom_col(fill="#ff5e19",
-                         color=NA)+
+                         color=NA,
+                         width = 0.75)+
                 ylab("Number of somatic mutations")+
-                xlab(paste0("Mutations (n=", plotSize, ")"))+
+                xlab(paste0("Mutations (n = ", plotSize, ")"))+
                 theme_bar_plot+
                 scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
                                    expand = c(0, 0))
