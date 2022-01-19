@@ -1,7 +1,7 @@
 library(data.table)
 rm(list=ls());gc()
 # -- Create essential files (initial run)
-DF <- readRDS("./data/20210709.FrequencyByMutation.RDS")
+DF <- readRDS("./data/20220117.FrequencyByMutation.RDS")
 DF <- DF[, replace(.SD, .SD == 0, NA)]
 DF[,Mutation:=gsub("X","Ter",Mutation)]
 
@@ -17,7 +17,7 @@ tissues <- tissues[tissues %nin% c("Protein","Mutation","counts","Frequency")]
 
 dir.create("./tmp")
 dir.create("./data/tissue")
-file.copy("./data/RAW_DATA.csv","./data/tissue/all.csv")
+file.copy("./data/RAW_DATA.csv","./data/tissue/all.csv", overwrite = T)
 
 writeTissueCSV <- function(tissue){
   idx <- c(1,2, which(colnames(DF) == tissue))

@@ -170,10 +170,9 @@ function(input, output,session) {
             threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Protein"), 20)
             
             single_protein_flag <- F
-            if(length(pie_table_all$Protein) == 1){
+            if(targetTissue == "all" & length(pie_table_all$Protein) == 1){
               # Just single gene in the search results
               single_protein_flag <- T
-              
               tissueFrequency_tmp <-
                 t(DF[, lapply(.SD, sum, na.rm = T), .SDcols = seq(5, ncol(DF) - 1)])
               
@@ -291,7 +290,7 @@ function(input, output,session) {
                 scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
                                    expand = c(0, 0))
               
-             if(single_protein_flag){
+             if(targetTissue == "all" & single_protein_flag){
                gridExtra::grid.arrange(ggBar,
                                        ggPie_singleProtein,
                                        ncol=2,
