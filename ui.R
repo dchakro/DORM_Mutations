@@ -73,7 +73,7 @@ fluidPage(
   tableOutput("table"),
 	hr(),
 	strong("Abbreviations:"),
-	pre("Ter = Termination i.e. STOP codon \nins / del = insertion / deletion\ndup / fs= duplication / frameshift\nNS = Not specified"),
+	pre("Ter = Termination i.e. STOP codon \nins / del = insertion / deletion\ndup / fs= duplication / frameshift\next = extension\nNS = Not specified"),
 	hr() # ,
 	# strong("Information:"),
 	# p(
