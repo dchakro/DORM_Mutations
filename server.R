@@ -36,7 +36,7 @@ theme_bar_plot=theme(axis.line = element_line(colour = "black",
 function(input, output,session) {
   RunAnalysis <- reactive({list(input$Search, input$size, input$tissue)})
     observeEvent(input$reset_input, {
-      updateNumericInput(session, "size", value = 100)
+      updateNumericInput(session, "size", value = 50)
       updateTextInput(session, "tissue", value = "all")
       shinyWidgets::updateSearchInput(session,"Search", value = "", trigger = T)
     })
