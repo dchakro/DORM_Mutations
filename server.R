@@ -310,6 +310,7 @@ function(input, output,session) {
         }
       }
   })
+    session$allowReconnect(TRUE)
     session$onSessionEnded(function() {
         gc()
         stopApp()
