@@ -38,7 +38,7 @@ fluidPage(
                selectInput("size",
                    "No. of records:",
                    c(10,50,100,500,1000,10000),
-                   selected = "100",
+                   selected = "50",
                    multiple = F,
                    selectize = F,
                    width = "120")
@@ -68,6 +68,8 @@ fluidPage(
 	              # The settings and search terms are anonymously saved to the server.
   hr(),
 	p(strong("Tip:"),'You can use a comma ( , ) or a semicolon ( ; ) to query multiple proteins e.g.', strong(span("BRAF, KRAS, EGFR",style='color:#EE5F21')),
+	  align="left"),
+	p(strong("Note:"),'The database only lists recurrent mutations (i.e. mutations with population frequency > 1) idenfied from genomes of cancer samples.',
 	  align="left"),
   hr(),
   tableOutput("table"),
