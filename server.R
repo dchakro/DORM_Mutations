@@ -15,7 +15,7 @@ theme_bar_plot=theme(axis.line = element_line(colour = "black",
                      panel.border = element_blank(),
                      panel.background=element_blank(),
                      panel.grid.major=element_blank(),
-                     axis.text.y= element_text(size = rel(1.5),
+                     axis.text.y= element_text(size = rel(1.7),
                                                color="black",
                                                margin=unit(c(0.3,0.3,0.3,0.3), 
                                                            "cm")),
@@ -27,9 +27,9 @@ theme_bar_plot=theme(axis.line = element_line(colour = "black",
                      legend.position="none",
                      text=element_text(family="serif"),
                      axis.ticks.length =unit(0.2, "cm"),
-                     axis.title.y = element_text(size=rel(1.5),
+                     axis.title.y = element_text(size=rel(1.7),
                                                  face="italic"),
-                     axis.title.x=element_text(size=rel(1.5),
+                     axis.title.x=element_text(size=rel(1.7),
                                                face="italic"))
 
 
@@ -222,7 +222,7 @@ function(input, output,session) {
                 scale_fill_manual(values= sliceColors) + 
                 theme(legend.position="right",
                       legend.text=element_text(family="serif",
-                                               size=12),
+                                               size=14),
                       legend.key.size = unit(0.5, "lines")) + 
                 guides(fill = guide_legend(title = paste0("Tissue (",
                                                           unique(pie_table_all$Protein),
@@ -231,7 +231,8 @@ function(input, output,session) {
                                            byrow = T, 
                                            nrow = (threshold2+1),
                                            title.theme = element_text(family="serif", 
-                                                                      face = "italic", 
+                                                                      face = "italic",
+                                                                      size=16,
                                                                       angle = 0)))+ 
                 coord_polar(theta = "y",
                             direction = -1)
@@ -267,14 +268,15 @@ function(input, output,session) {
                 scale_fill_manual(values= sliceColors) + 
                 theme(legend.position="right",
                       legend.text=element_text(family="serif",
-                                               size=12),
+                                               size=14),
                       legend.key.size = unit(0.5, "lines")) + 
                 guides(fill = guide_legend(title = "Proteins", 
                                            title.position = "top", 
                                            byrow = T, 
                                            nrow = (threshold+1),
                                            title.theme = element_text(family="serif", 
-                                                                      face = "italic", 
+                                                                      face = "italic",
+                                                                      size=16,
                                                                       angle = 0)))+ 
                 coord_polar(theta = "y",
                             direction = -1)

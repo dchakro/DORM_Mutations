@@ -86,7 +86,7 @@ plot_bar <- function(Tissue){
           legend.text=element_text(family="serif",
                                    size = 6),
           title = element_text(family = "serif", 
-                               size = rel(1.3), 
+                               size = rel(1.5), 
                                face = "bold.italic"),
           plot.title = element_text(hjust = 0),
           axis.text.x = element_text(family = "serif",
@@ -94,11 +94,11 @@ plot_bar <- function(Tissue){
                                      angle = 45,
                                      hjust = 1,
                                      vjust = 1,
-                                     size = rel(1.2),
+                                     size = rel(1.3),
                                      color = "black"),
           axis.text.y = element_text(family = "serif",
                                      face = "plain",
-                                     size = rel(1.3),
+                                     size = rel(1.5),
                                      color = "black"),
           axis.title = element_text(family="serif", 
                                     size = rel(1.2), 
@@ -111,10 +111,10 @@ plot_bar <- function(Tissue){
 }
 
 # ----> Set up environment <-------
-setwd("/Users/deepankar/OneDrive - O365 Turun yliopisto/Git/GitHub/websites/eleniuslabtools.utu.fi/shiny-apps/COSMIC/HotspotMutations/src")
+setwd("/Users/deepankar/OneDrive - O365 Turun yliopisto/Git/GitHub/websites/eleniuslabtools.utu.fi/shiny-apps/DORM/Mutations/src")
 source("https://gist.githubusercontent.com/dchakro/8b1e97ba6853563dd0bb5b7be2317692/raw/parallelRDS.R")
 
-Stats <- readRDS.gz("/Users/deepankar/OneDrive - O365 Turun yliopisto/Klaus lab/Manuscripts/Hotspot Explorer/Data/COSMIC_v94_R_DT/CountStatsRAW.RDS")
+Stats <- readRDS.gz("/Users/deepankar/OneDrive - O365 Turun yliopisto/Klaus lab/Manuscripts/DORM database/Data/COSMIC_v95_R_DT/CountStatsRAW.RDS")
 rm(loadRDS,readRDS.gz,writeRDS,saveRDS.gz)
 
 sampleCount <- unique(Stats[,.(Sample.name,tissue)])[,.N,.(tissue)]
