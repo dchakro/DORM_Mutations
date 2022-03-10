@@ -87,7 +87,6 @@ function(input, output,session) {
           theme_bar_plot
         
         if(plotSize <= 50){
-          print(DF$mutsID)
           ggBar <- ggBar + x_ax_labels
         }
       
@@ -98,9 +97,24 @@ function(input, output,session) {
                                                 widths = c(3, 2))
         })
     } else {
+      resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
+      
+      if(grepl(pattern = "[[:space:]]", x = searchTerm, fixed = F) &
+         grepl(pattern = "[,;]", x = searchTerm, fixed = F)
+      ){
+        # print(searchTerm)
+        searchTerm <- gsub(" ",
+                           ";",
+                           gsub("[,;]+[[:space:]]+",
+                                "|",
+                                searchTerm,
+                                fixed = F),
+                           fixed = T)
+        command = paste0("egrep -i '", searchTerm, "' ./data/tissue/", targetTissue, ".csv >| ", resultsFile)
+        # print(command)
+      } else{
         searchTerm <- gsub("[,;]+[[:space:]]+", "|", searchTerm, fixed = F)
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
-          resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
           searchTerm <- unlist(strsplit(x = searchTerm, 
                                         split = " ",
                                         fixed = T),
@@ -120,6 +134,7 @@ function(input, output,session) {
           resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
           if(searchTerm != "") command = paste0("egrep -i '", searchTerm, "' ./data/tissue/", targetTissue, ".csv >| ", resultsFile)
         }
+      }
         if(command != "" ){
           system(command = command, intern = F, wait=T)
           if(file.info(resultsFile)$size == 0){ # if file is empty
@@ -309,7 +324,6 @@ function(input, output,session) {
                 theme_bar_plot
                 
               if(plotSize <= 50){
-                print(DF$mutsID)
                 ggBar <- ggBar + x_ax_labels
               }
               
