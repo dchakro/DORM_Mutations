@@ -32,7 +32,7 @@ theme_bar_plot <- theme(axis.line = element_line(colour = "black",
                      axis.title.x=element_text(size=rel(1.7),
                                                face="italic"))
 
-x_ax_labels <- theme(axis.ticks.y =element_line(colour = "black"),
+x_ax_labels <- theme(axis.ticks.x = element_line(colour = "black"),
                      axis.text.x = element_text(family = "serif",
                                                 face = "plain",
                                                 angle = 45,
@@ -242,19 +242,27 @@ function(input, output,session) {
               
               sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
               names(sliceColors) <- pie_table$Tissue
+              pie_table$percentage <-  pie_table$count /
+                sampleCount$count[match(gsub(" ","_",pie_table$Tissue,fixed = T), sampleCount$tissue)]
+              # FIX THIS
+              # pie_table$percentage[pie_table$Tissue=="Others"] <- pie_table$count/35000
               
-              ggPie_singleProtein <- ggplot(pie_table, aes(x="",
-                                             y=count,
-                                             fill=reorder(Tissue,-count)))+
+              print(pie_table)
+              
+              ggPie_singleProtein <- ggplot(pie_table, aes(x=reorder(Tissue, -percentage),
+                                             y=percentage,
+                                             fill=reorder(Tissue, -percentage)))+
                 geom_bar(stat="identity", 
                          width=1, 
                          color="white") + 
-                theme_void() + 
-                scale_fill_manual(values= sliceColors) + 
-                theme(legend.position="right",
-                      legend.text=element_text(family="serif",
-                                               size=14),
-                      legend.key.size = unit(0.5, "lines")) + 
+                theme_bar_plot + 
+                x_ax_labels +
+                scale_fill_manual(values= viridis::plasma(nrow(pie_table))) + 
+                theme(legend.position = "none",
+                      axis.title.x = element_blank()) + 
+                ylab("Samples with mutation (%)")+
+                scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
+                                   expand = c(0, 0))+
                 guides(fill = guide_legend(title = paste0("Tissue (",
                                                           unique(pie_table_all$Protein),
                                                           ")"), 
@@ -264,9 +272,7 @@ function(input, output,session) {
                                            title.theme = element_text(family="serif", 
                                                                       face = "italic",
                                                                       size=16,
-                                                                      angle = 0)))+ 
-                coord_polar(theta = "y",
-                            direction = -1)
+                                                                      angle = 0)))
             } else {
               setorder(pie_table_all, -count, Protein)
               pie_table <- pie_table_all[1:threshold, ]
