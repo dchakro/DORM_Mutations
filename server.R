@@ -231,9 +231,14 @@ function(input, output,session) {
                   data.table::rbindlist(l = list(pie_table, list("Others", 0 )))  
               }
               
+              pie_table$percentage <-  pie_table$count /
+                sampleCount$count[match(gsub(" ","_",pie_table$Tissue,fixed = T), sampleCount$tissue)]
+              pie_table$percentage[pie_table$Tissue=="Others"] <- pie_table$count/((sampleCount$count[sampleCount$tissue == "all"]) - sum(sampleCount$count[match(pie_table$Tissue, sampleCount$tissue)],na.rm = T))
+              setorder(pie_table,-percentage)
+              
               sliceColors <- rep(NA, length(pie_table$Tissue))
               idx <- na.exclude(c(which(pie_table$Tissue == "Others"),
-                       which(pie_table$Tissue == "NS")))
+                                  which(pie_table$Tissue == "NS")))
               if(length(idx)==1){
                 sliceColors[idx] <- c("#0A0A0A")  
               } else {
@@ -242,10 +247,6 @@ function(input, output,session) {
               
               sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
               names(sliceColors) <- pie_table$Tissue
-              pie_table$percentage <-  pie_table$count /
-                sampleCount$count[match(gsub(" ","_",pie_table$Tissue,fixed = T), sampleCount$tissue)]
-              # FIX THIS
-              # pie_table$percentage[pie_table$Tissue=="Others"] <- pie_table$count/35000
               
               print(pie_table)
               
@@ -257,9 +258,10 @@ function(input, output,session) {
                          color="white") + 
                 theme_bar_plot + 
                 x_ax_labels +
-                scale_fill_manual(values= viridis::plasma(nrow(pie_table))) + 
+                scale_fill_manual(values= sliceColors) + 
                 theme(legend.position = "none",
-                      axis.title.x = element_blank()) + 
+                      axis.title.x = element_blank(),
+                      axis.text.x = element_text(size=rel(1.5))) + 
                 ylab("Samples with mutation (%)")+
                 scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
                                    expand = c(0, 0))+
