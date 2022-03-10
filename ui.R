@@ -37,7 +37,7 @@ fluidPage(
         column(2,
                selectInput("size",
                    "No. of records:",
-                   c(10,50,100,500,1000,10000),
+                   c(10,25,50,100,500,1000,10000),
                    selected = "50",
                    multiple = F,
                    selectize = F,

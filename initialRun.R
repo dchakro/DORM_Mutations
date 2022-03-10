@@ -38,3 +38,13 @@ invisible(lapply(X = tissues,FUN = function(x) writeTissueCSV(x)))
 
 message("Done!")
 message("Note: Run  sudo chown -R shiny:shiny tmp ")
+
+# ---------
+# Run On Mac !
+
+# rm(list=ls());gc()
+# tmp <- readRDS("/Users/deepankar/OneDrive - O365 Turun yliopisto/Klaus lab/Manuscripts/DORM database/Data/COSMIC_v95_R_DT/sampleCountByCancerType.RDS")
+# tmp[,tissue:=gsub(" ","_",tissue)]
+# 
+# tmp <- rbind(tmp,list("all",sum(tmp$count)))
+# saveRDS(tmp,"data/sampleCountByCancerType.RDS")

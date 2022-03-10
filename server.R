@@ -7,10 +7,10 @@ library(ggplot2)
 #   system(command = "xz -kd ./data/Table.csv.xz",intern = F,wait = T)
 # }
 ColumnNames <- readLines("./data/ColumnNames.txt")
-
+sampleCount <- readRDS("data/sampleCountByCancerType.RDS")
 ## -- END --
 
-theme_bar_plot=theme(axis.line = element_line(colour = "black",
+theme_bar_plot <- theme(axis.line = element_line(colour = "black",
                                               size=0.5),
                      panel.border = element_blank(),
                      panel.background=element_blank(),
@@ -32,6 +32,17 @@ theme_bar_plot=theme(axis.line = element_line(colour = "black",
                      axis.title.x=element_text(size=rel(1.7),
                                                face="italic"))
 
+x_ax_labels <- theme(axis.ticks.y =element_line(colour = "black"),
+                     axis.text.x = element_text(family = "serif",
+                                                face = "plain",
+                                                angle = 45,
+                                                hjust = 1,
+                                                vjust = 1,
+                                                size = rel(1.3),
+                                                color = "black",
+                                                margin=unit(c(0.1,0.1,0.1,0.1), 
+                                                            "cm"),
+                                                ))
 
 function(input, output,session) {
   RunAnalysis <- reactive({list(input$Search, input$size, input$tissue)})
@@ -60,26 +71,31 @@ function(input, output,session) {
         }
         plotSize <- min(plotSize,nrow(DF), na.rm = T)
          
-        DF[,mutsID := paste0(Protein,Mutation,sep="_")]
+        DF[,mutsID := paste0(Protein," ",Mutation)]
         
         output$plot <- renderPlot({
         overall_percentage_bar <- readRDS(paste0("./data/bar_with_others/",targetTissue,".RDS"))
         ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
-                                                  y=counts))+
+                                                  y=counts/sampleCount$count[sampleCount$tissue==targetTissue]))+
           geom_col(fill="#ff5e19",
                    color=NA,
                    width = 0.75)+
-          ylab("Number of somatic mutations")+
+          ylab("Samples with mutation (%)\n(out of the samples for selected type)")+
           xlab(paste0("Mutations (n = ", plotSize, ")"))+
-          theme_bar_plot+
-          scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
-                             expand = c(0,0))
+          scale_y_continuous(labels= scales::percent_format(accuracy = 0.1),
+                             expand = c(0,0))+
+          theme_bar_plot
         
+        if(plotSize <= 50){
+          print(DF$mutsID)
+          ggBar <- ggBar + x_ax_labels
+        }
+      
         plotObject1 <-  gridExtra::grid.arrange(ggBar,
                                                 overall_percentage_bar,
                                                 ncol=2,
                                                 nrow=1,
-                                                widths = c(2, 2))
+                                                widths = c(3, 2))
         })
     } else {
         searchTerm <- gsub("[,;]+[[:space:]]+", "|", searchTerm, fixed = F)
@@ -165,7 +181,7 @@ function(input, output,session) {
               output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
             }
             
-            DF[,mutsID := paste0(Protein,Mutation,sep="_")]
+            DF[,mutsID := paste0(Protein," ", Mutation)]
             pie_table_all <- DF[,.(count=sum(counts)), by = Protein]
             threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Protein"), 20)
             
@@ -282,29 +298,34 @@ function(input, output,session) {
                             direction = -1)
               
               ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
-                                                        y=counts))+
+                                                        y=counts/sampleCount$count[sampleCount$tissue==targetTissue]))+
                 geom_col(fill="#ff5e19",
                          color=NA,
                          width = 0.75)+
-                ylab("Number of somatic mutations")+
+                ylab("Samples with mutation\n(% of total samples for selected type)")+
                 xlab(paste0("Mutations (n = ", plotSize, ")"))+
-                theme_bar_plot+
-                scale_y_continuous(limits = c(0, max(DF$counts[1:plotSize])), 
-                                   expand = c(0, 0))
+                scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
+                                   expand = c(0, 0))+
+                theme_bar_plot
+                
+              if(plotSize <= 50){
+                print(DF$mutsID)
+                ggBar <- ggBar + x_ax_labels
+              }
               
              if(targetTissue == "all" & single_protein_flag){
                gridExtra::grid.arrange(ggBar,
                                        ggPie_singleProtein,
                                        ncol=2,
                                        nrow=1,
-                                       widths = c(2, 2))
+                                       widths = c(3, 2))
                
              } else {
                gridExtra::grid.arrange(ggBar,
                                        ggPie,
                                        ncol=2,
                                        nrow=1,
-                                       widths = c(2, 2))
+                                       widths = c(3, 2))
                
              } 
             })
