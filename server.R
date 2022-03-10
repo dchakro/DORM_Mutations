@@ -233,7 +233,7 @@ function(input, output,session) {
               
               pie_table$percentage <-  pie_table$count /
                 sampleCount$count[match(gsub(" ","_",pie_table$Tissue,fixed = T), sampleCount$tissue)]
-              pie_table$percentage[pie_table$Tissue=="Others"] <- pie_table$count/((sampleCount$count[sampleCount$tissue == "all"]) - sum(sampleCount$count[match(pie_table$Tissue, sampleCount$tissue)],na.rm = T))
+              pie_table$percentage[pie_table$Tissue=="Others"] <- pie_table$count[pie_table$Tissue=="Others"]/((sampleCount$count[sampleCount$tissue == "all"]) - sum(sampleCount$count[match(pie_table$Tissue, sampleCount$tissue)],na.rm = T))
               setorder(pie_table,-percentage)
               
               sliceColors <- rep(NA, length(pie_table$Tissue))
@@ -248,7 +248,7 @@ function(input, output,session) {
               sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
               names(sliceColors) <- pie_table$Tissue
               
-              print(pie_table)
+              # print(pie_table)
               
               ggPie_singleProtein <- ggplot(pie_table, aes(x=reorder(Tissue, -percentage),
                                              y=percentage,
@@ -262,19 +262,9 @@ function(input, output,session) {
                 theme(legend.position = "none",
                       axis.title.x = element_blank(),
                       axis.text.x = element_text(size=rel(1.5))) + 
-                ylab("Samples with mutation (%)")+
+                ylab(paste0("Samples with ",unique(pie_table_all$Protein)," mutations (%)"))+
                 scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
-                                   expand = c(0, 0))+
-                guides(fill = guide_legend(title = paste0("Tissue (",
-                                                          unique(pie_table_all$Protein),
-                                                          ")"), 
-                                           title.position = "top", 
-                                           byrow = T, 
-                                           nrow = (threshold2+1),
-                                           title.theme = element_text(family="serif", 
-                                                                      face = "italic",
-                                                                      size=16,
-                                                                      angle = 0)))
+                                   expand = c(0, 0))
             } else {
               setorder(pie_table_all, -count, Protein)
               pie_table <- pie_table_all[1:threshold, ]
