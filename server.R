@@ -97,6 +97,7 @@ function(input, output,session) {
                                                 widths = c(3, 2))
         })
     } else {
+      # i.e. if there's no search term 
       resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
       
       if(grepl(pattern = "[[:space:]]", x = searchTerm, fixed = F) &
@@ -112,7 +113,9 @@ function(input, output,session) {
                            fixed = T)
         command = paste0("egrep -i '", searchTerm, "' ./data/tissue/", targetTissue, ".csv >| ", resultsFile)
         # print(command)
-      } else{
+      } else {
+        # i.e. if the search term contains a list of gene-mutation pairs
+        # e.g. KRAS G12, BRAF V600
         searchTerm <- gsub("[,;]+[[:space:]]+", "|", searchTerm, fixed = F)
         if(grepl(pattern = " ",x = searchTerm,fixed = T)){
           searchTerm <- unlist(strsplit(x = searchTerm, 
@@ -131,6 +134,7 @@ function(input, output,session) {
                             " >| ",
                             resultsFile)
         } else {
+          # i.e. if the search term is a single expression, and not a nested expression
           resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
           if(searchTerm != "") command = paste0("egrep -i '", searchTerm, "' ./data/tissue/", targetTissue, ".csv >| ", resultsFile)
         }
@@ -180,6 +184,7 @@ function(input, output,session) {
             })
             
           } else {
+            # i.e. if there are actual search results i.e. file isn't empty
             DF <- data.table::fread(file = resultsFile,
                                     sep = ";",
                                     header = F,
@@ -201,54 +206,68 @@ function(input, output,session) {
             threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Protein"), 20)
             
             single_protein_flag <- F
-            if(targetTissue == "all" & length(pie_table_all$Protein) == 1){
+            if(length(pie_table_all$Protein) == 1){
               # Just single gene in the search results
               single_protein_flag <- T
-              tissueFrequency_tmp <-
-                t(DF[, lapply(.SD, sum, na.rm = T), .SDcols = seq(5, ncol(DF) - 1)])
-              
-              tissueFrequency <- data.table(Tissue=dimnames(tissueFrequency_tmp)[[1]],
-                                            tissueFrequency_tmp)
-              rm(tissueFrequency_tmp)
-              setnames(tissueFrequency, "V1", "count")
-              tissueFrequency <- tissueFrequency[count != 0, ]
-              data.table::setorder(tissueFrequency, -count)
-              tissueFrequency[,Tissue:=gsub("_"," ",Tissue)]
-              
-              threshold2 <- min(dim(tissueFrequency)[1], 15)
-              pie_table <- tissueFrequency[1:threshold2,]
-              if (threshold2 < nrow(tissueFrequency)) {
+              if(targetTissue == "all"){
+                tissueFrequency_tmp <-
+                  t(DF[, lapply(.SD, sum, na.rm = T), .SDcols = seq(5, ncol(DF) - 1)])
                 
-                pie_table <-
-                  data.table::rbindlist(l = list(pie_table, 
-                                                 list("Others", 
-                                                      sum(
-                    tissueFrequency[(threshold2 + 1):nrow(tissueFrequency), 
-                                    "count"], 
-                    na.rm = T))))  
+                tissueFrequency <- data.table(Tissue=dimnames(tissueFrequency_tmp)[[1]],
+                                              tissueFrequency_tmp)
+                rm(tissueFrequency_tmp)
+                setnames(tissueFrequency, "V1", "count")
+                tissueFrequency <- tissueFrequency[count != 0, ]
+                data.table::setorder(tissueFrequency, -count)
+                tissueFrequency[,Tissue:=gsub("_"," ",Tissue)]
+                
+                threshold2 <- min(dim(tissueFrequency)[1], 15)
+                pie_table <- tissueFrequency[1:threshold2,]
+                if (threshold2 < nrow(tissueFrequency)) {
+                  
+                  pie_table <-
+                    data.table::rbindlist(l = list(pie_table, 
+                                                   list("Others", 
+                                                        sum(
+                                                          tissueFrequency[(threshold2 + 1):nrow(tissueFrequency), 
+                                                                          "count"], 
+                                                          na.rm = T))))  
+                } else {
+                  # i.e. less than 15 tissues
+                  pie_table <-
+                    data.table::rbindlist(l = list(pie_table, list("Others", 0 )))  
+                }
+                pie_table$percentage <-  pie_table$count /
+                  sampleCount$count[match(gsub(" ", "_", pie_table$Tissue, fixed = T), sampleCount$tissue)]
+                
+                pie_table$percentage[pie_table$Tissue == "Others"] <-
+                  pie_table$count[pie_table$Tissue == "Others"] / ((sampleCount$count[sampleCount$tissue == "all"]) - sum(sampleCount$count[match(pie_table$Tissue, sampleCount$tissue)], na.rm = T))
+                
+                setorder(pie_table, -percentage)
+                sliceColors <- rep(NA, length(pie_table$Tissue))
+                idx <- na.exclude(c(which(pie_table$Tissue == "Others"),
+                                    which(pie_table$Tissue == "NS")))
+                if(length(idx)==1){
+                  sliceColors[idx] <- c("#0A0A0A")  
+                } else {
+                  sliceColors[idx] <- c("#0A0A0A","#C7C7C7")
+                }
+                
+                sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
+                names(sliceColors) <- pie_table$Tissue
               } else {
-                pie_table <-
-                  data.table::rbindlist(l = list(pie_table, list("Others", 0 )))  
+                # i.e. target tissue != "all"
+                pie_table <- as.data.table(data.frame(Tissue = NA, count = NA, percentage = NA))
+                pie_table$Tissue[1] <- targetTissue
+                pie_table$count[1] <- sum(DF$counts)
+                pie_table$percentage <-  pie_table$count /
+                  sampleCount$count[match(gsub(" ", "_", pie_table$Tissue, fixed = T), sampleCount$tissue)]
+                sliceColors <- viridis::plasma(length(pie_table$Tissue),direction = 1)
               }
               
-              pie_table$percentage <-  pie_table$count /
-                sampleCount$count[match(gsub(" ","_",pie_table$Tissue,fixed = T), sampleCount$tissue)]
-              pie_table$percentage[pie_table$Tissue=="Others"] <- pie_table$count[pie_table$Tissue=="Others"]/((sampleCount$count[sampleCount$tissue == "all"]) - sum(sampleCount$count[match(pie_table$Tissue, sampleCount$tissue)],na.rm = T))
-              setorder(pie_table,-percentage)
               
-              sliceColors <- rep(NA, length(pie_table$Tissue))
-              idx <- na.exclude(c(which(pie_table$Tissue == "Others"),
-                                  which(pie_table$Tissue == "NS")))
-              if(length(idx)==1){
-                sliceColors[idx] <- c("#0A0A0A")  
-              } else {
-                sliceColors[idx] <- c("#0A0A0A","#C7C7C7")
-              }
               
-              sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
-              names(sliceColors) <- pie_table$Tissue
-              
-              # print(pie_table)
+              print(sliceColors)
               ggBar_singleProtein <-
                 ggplot(pie_table, aes(
                   x = reorder(Tissue,-percentage),
@@ -327,7 +346,7 @@ function(input, output,session) {
                 ggBar <- ggBar + x_ax_labels
               }
               
-             if(targetTissue == "all" & single_protein_flag){
+             if(single_protein_flag){
                gridExtra::grid.arrange(ggBar,
                                        ggBar_singleProtein,
                                        ncol=2,
