@@ -17,7 +17,7 @@ theme_bar_plot <- theme(axis.line = element_line(colour = "black",
                      panel.grid.major=element_blank(),
                      axis.text.y= element_text(size = rel(1.7),
                                                color="black",
-                                               margin=unit(c(0.3,0.3,0.3,0.3), 
+                                               margin=unit(c(0.3,0.3,0.3,0), 
                                                            "cm")),
                      legend.key= element_rect(fill=NA,
                                               colour = NA), 
@@ -281,7 +281,7 @@ function(input, output,session) {
                 theme(legend.position = "none",
                       axis.title.x = element_blank(),
                       axis.text.x = element_text(size=rel(1.5))) + 
-                ylab(paste0("Samples with ",unique(pie_table_all$Protein)," mutations (%)"))+
+                ylab(paste0(unique(pie_table_all$Protein)," mutant samples (%)"))+
                 scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
                                    expand = c(0, 0))
             } else {
