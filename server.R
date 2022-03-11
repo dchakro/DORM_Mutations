@@ -80,7 +80,7 @@ function(input, output,session) {
           geom_col(fill="#ff5e19",
                    color=NA,
                    width = 0.75)+
-          ylab("Samples with mutation (%)\n(out of the samples for selected type)")+
+          ylab(paste0("Samples with mutation\n(% of ",targetTissue," samples)"))+
           xlab(paste0("Mutations (n = ", plotSize, ")"))+
           scale_y_continuous(labels= scales::percent_format(accuracy = 0.1),
                              expand = c(0,0))+
@@ -334,7 +334,7 @@ function(input, output,session) {
                 geom_col(fill="#ff5e19",
                          color=NA,
                          width = 0.75)+
-                ylab("Samples with mutation\n(% of total samples for selected type)")+
+                ylab(paste0("Samples with mutation\n(% of ",targetTissue," samples)"))+
                 xlab(paste0("Mutations (n = ", plotSize, ")"))+
                 scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
                                    expand = c(0, 0))+
