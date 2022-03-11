@@ -279,9 +279,9 @@ function(input, output,session) {
                 x_ax_labels +
                 scale_fill_manual(values= sliceColors) + 
                 theme(legend.position = "none",
-                      axis.title.x = element_blank(),
                       axis.text.x = element_text(size=rel(1.5))) + 
                 ylab(paste0(unique(pie_table_all$Protein)," mutant samples (%)"))+
+                xlab("Tissues")+
                 scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
                                    expand = c(0, 0))
             } else {
