@@ -258,24 +258,22 @@ function(input, output,session) {
               } else {
                 # i.e. target tissue != "all"
                 pie_table <- as.data.table(data.frame(Tissue = NA, count = NA, percentage = NA))
-                pie_table$Tissue[1] <- targetTissue
+                pie_table$Tissue[1] <- gsub("_", " ", targetTissue)
                 pie_table$count[1] <- sum(DF$counts)
                 pie_table$percentage <-  pie_table$count /
                   sampleCount$count[match(gsub(" ", "_", pie_table$Tissue, fixed = T), sampleCount$tissue)]
                 sliceColors <- viridis::plasma(length(pie_table$Tissue),direction = 1)
               }
               
-              
-              
               print(sliceColors)
               ggBar_singleProtein <-
                 ggplot(pie_table, aes(
-                  x = reorder(Tissue,-percentage),
+                  x = reorder(Tissue, -percentage),
                   y = percentage,
-                  fill = reorder(Tissue,-percentage)
+                  fill = reorder(Tissue, -percentage)
                 ))+
                 geom_bar(stat="identity", 
-                         width=1, 
+                         width=0.75, 
                          color="white") + 
                 theme_bar_plot + 
                 x_ax_labels +
