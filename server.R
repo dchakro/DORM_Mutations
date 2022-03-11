@@ -249,10 +249,12 @@ function(input, output,session) {
               names(sliceColors) <- pie_table$Tissue
               
               # print(pie_table)
-              
-              ggPie_singleProtein <- ggplot(pie_table, aes(x=reorder(Tissue, -percentage),
-                                             y=percentage,
-                                             fill=reorder(Tissue, -percentage)))+
+              ggBar_singleProtein <-
+                ggplot(pie_table, aes(
+                  x = reorder(Tissue,-percentage),
+                  y = percentage,
+                  fill = reorder(Tissue,-percentage)
+                ))+
                 geom_bar(stat="identity", 
                          width=1, 
                          color="white") + 
@@ -327,7 +329,7 @@ function(input, output,session) {
               
              if(targetTissue == "all" & single_protein_flag){
                gridExtra::grid.arrange(ggBar,
-                                       ggPie_singleProtein,
+                                       ggBar_singleProtein,
                                        ncol=2,
                                        nrow=1,
                                        widths = c(3, 2))
