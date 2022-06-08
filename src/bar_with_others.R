@@ -114,7 +114,7 @@ plot_bar <- function(Tissue){
 setwd("/Users/deepankar/OneDrive - O365 Turun yliopisto/Git/GitHub/websites/eleniuslabtools.utu.fi/shiny-apps/DORM/Mutations/src")
 source("https://gist.githubusercontent.com/dchakro/8b1e97ba6853563dd0bb5b7be2317692/raw/parallelRDS.R")
 
-Stats <- readRDS.gz("/Users/deepankar/OneDrive - O365 Turun yliopisto/Klaus lab/Manuscripts/DORM database/Data/COSMIC_v95_R_DT/CountStatsRAW.RDS")
+Stats <- readRDS.gz("/Users/deepankar/OneDrive - O365 Turun yliopisto/ExtraWorkSync/Klaus-Lab-Data/Big Data/COSMIC/v96/CountStatsRAW.RDS")
 rm(loadRDS,readRDS.gz,writeRDS,saveRDS.gz)
 
 sampleCount <- unique(Stats[,.(Sample.name,tissue)])[,.N,.(tissue)]
