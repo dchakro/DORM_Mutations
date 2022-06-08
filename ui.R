@@ -86,9 +86,10 @@ fluidPage(
   hr(),
   tableOutput("table"),
 	hr(),
+	p(strong("Data updated:"),"2022-06-08 (yyyy-mm-dd)" ),
 	strong("Abbreviations:"),
 	pre("Ter = Termination i.e. STOP codon \nins / del = insertion / deletion\ndup / fs= duplication / frameshift\next = extension\nNS = Not specified"),
-	hr() # ,
+	hr()# ,
 	# strong("Information:"),
 	# p(
 	#   'This website hosts processed data that is available at the',
