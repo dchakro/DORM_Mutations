@@ -81,7 +81,7 @@ fluidPage(
   hr(),
 	p(strong("Tip:"),'You can use a comma ( , ) or a semicolon ( ; ) to query multiple proteins e.g.', strong(span("BRAF, KRAS, EGFR",style='color:#EE5F21')),
 	  align="left"),
-	p(strong("Note:"),'The database only lists recurrent mutations (i.e. mutations with population frequency > 1) idenfied from genomes of cancer samples.',
+	p(strong("Note:"),'The database only lists recurrent mutations (i.e. mutations with population frequency > 1) identified from genomes of cancer samples.',
 	  align="left"),
   hr(),
   tableOutput("table"),
