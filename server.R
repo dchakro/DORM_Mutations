@@ -81,7 +81,7 @@ function(input, output,session) {
                    color=NA,
                    width = 0.75)+
           ylab(paste0("Samples with mutation\n(% of ",targetTissue," samples)"))+
-          xlab(paste0("Mutations (n = ", plotSize, ")"))+
+          xlab(paste0("Recurrent mutations (n = ", plotSize, ")"))+
           scale_y_continuous(labels= scales::percent_format(accuracy = 0.1),
                              expand = c(0,0))+
           theme_bar_plot
@@ -335,7 +335,7 @@ function(input, output,session) {
                          color=NA,
                          width = 0.75)+
                 ylab(paste0("Samples with mutation\n(% of ",targetTissue," samples)"))+
-                xlab(paste0("Mutations (n = ", plotSize, ")"))+
+                xlab(paste0("Recurrent mutations (n = ", plotSize, ")"))+
                 scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
                                    expand = c(0, 0))+
                 theme_bar_plot
