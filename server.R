@@ -56,6 +56,7 @@ function(input, output,session) {
       plotSize <- as.integer(input$size)
       targetTissue <- input$tissue
       if(searchTerm == ""){
+        # i.e. if there's no search term 
         command <- ""
         DF <- data.table::fread(file = paste0("./data/tissue/",targetTissue,".csv"),
                                   sep = ";",
@@ -80,7 +81,7 @@ function(input, output,session) {
           geom_col(fill="#ff5e19",
                    color=NA,
                    width = 0.75)+
-          ylab(paste0("Samples with mutation\n(% of ",targetTissue," samples)"))+
+          ylab(paste0("Samples with recurrent mutation\n(% of ",targetTissue," samples)"))+
           xlab(paste0("Recurrent mutations (n = ", plotSize, ")"))+
           scale_y_continuous(labels= scales::percent_format(accuracy = 0.1),
                              expand = c(0,0))+
@@ -97,7 +98,7 @@ function(input, output,session) {
                                                 widths = c(3, 2))
         })
     } else {
-      # i.e. if there's no search term 
+      # i.e. if there is search term 
       resultsFile <- paste0("./tmp/",format(Sys.time(),"%Y%m%d%H%M%s"),"_tmp.csv")
       
       if(grepl(pattern = "[[:space:]]", x = searchTerm, fixed = F) &
@@ -200,7 +201,6 @@ function(input, output,session) {
             } else {
               output$table <- renderTable(DF[1:plotSize, c(1,2,3,4)])
             }
-            
             DF[,mutsID := paste0(Protein," ", Mutation)]
             pie_table_all <- DF[,.(count=sum(counts)), by = Protein]
             threshold <- min(plotSize, uniqueN(x = pie_table_all, by = "Protein"), 20)
@@ -250,7 +250,7 @@ function(input, output,session) {
                 if(length(idx)==1){
                   sliceColors[idx] <- c("#0A0A0A")  
                 } else {
-                  sliceColors[idx] <- c("#0A0A0A","#C7C7C7")
+                  sliceColors[idx] <- c("#0A0A0A", "#C7C7C7")
                 }
                 
                 sliceColors[-idx] <- viridis::plasma(length(pie_table$Tissue[-idx]),direction = 1)
@@ -265,7 +265,23 @@ function(input, output,session) {
                 sliceColors <- viridis::plasma(length(pie_table$Tissue),direction = 1)
               }
               
-              print(sliceColors)
+              # print(sliceColors)
+              ggBar_search1 <- ggplot(data=DF[1:plotSize,], 
+                              aes(x=reorder(gsub(paste0(unique(pie_table_all$Protein), " "), " ", mutsID),-counts),
+                                  y=counts/sampleCount$count[sampleCount$tissue==targetTissue]))+
+                geom_col(fill="#ff5e19",
+                         color=NA,
+                         width = 0.75)+
+                ylab(paste0("Samples with indicated\nmutation (% of samples)"))+
+                xlab(paste0("Recurrent ", 
+                            unique(pie_table_all$Protein)
+                            ," mutations (n = ", plotSize, ")"))+
+                scale_y_continuous(labels = scales::percent_format(accuracy = 0.01), 
+                                   expand = c(0, 0))+
+                theme_bar_plot
+              if(plotSize <= 50){
+                ggBar_search1 <- ggBar_search1 + x_ax_labels
+              }
               ggBar_singleProtein <-
                 ggplot(pie_table, aes(
                   x = reorder(Tissue, -percentage),
@@ -280,7 +296,7 @@ function(input, output,session) {
                 scale_fill_manual(values= sliceColors) + 
                 theme(legend.position = "none",
                       axis.text.x = element_text(size=rel(1.5))) + 
-                ylab(paste0(unique(pie_table_all$Protein)," mutant samples (%)"))+
+                ylab(paste0("Samples with listed\n",unique(pie_table_all$Protein)," mutation (%)"))+
                 xlab("Tissues")+
                 scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
                                    expand = c(0, 0))
@@ -329,30 +345,31 @@ function(input, output,session) {
                 coord_polar(theta = "y",
                             direction = -1)
               
-              ggBar <- ggplot(data=DF[1:plotSize,], aes(x=reorder(mutsID, -counts),
-                                                        y=counts/sampleCount$count[sampleCount$tissue==targetTissue]))+
+              ggBar_search <- ggplot(data=DF[1:plotSize,], 
+                              aes(x=reorder(mutsID,-counts),
+                                  y=counts/sampleCount$count[sampleCount$tissue==targetTissue]))+
                 geom_col(fill="#ff5e19",
                          color=NA,
                          width = 0.75)+
-                ylab(paste0("Samples with mutation\n(% of ",targetTissue," samples)"))+
+                ylab(paste0("Samples with indicated\nmutation (% of samples)"))+
                 xlab(paste0("Recurrent mutations (n = ", plotSize, ")"))+
-                scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
+                scale_y_continuous(labels = scales::percent_format(accuracy = 0.01), 
                                    expand = c(0, 0))+
                 theme_bar_plot
                 
               if(plotSize <= 50){
-                ggBar <- ggBar + x_ax_labels
+                ggBar_search <- ggBar_search + x_ax_labels
               }
               
              if(single_protein_flag){
-               gridExtra::grid.arrange(ggBar,
+               gridExtra::grid.arrange(ggBar_search1,
                                        ggBar_singleProtein,
                                        ncol=2,
                                        nrow=1,
                                        widths = c(3, 2))
                
              } else {
-               gridExtra::grid.arrange(ggBar,
+               gridExtra::grid.arrange(ggBar_search,
                                        ggPie,
                                        ncol=2,
                                        nrow=1,
