@@ -111,10 +111,10 @@ plot_bar <- function(Tissue){
 }
 
 # ----> Set up environment <-------
-setwd("/Users/deepankar/OneDrive - O365 Turun yliopisto/Git/GitHub/websites/eleniuslabtools.utu.fi/shiny-apps/DORM/Mutations/src")
+setwd("C:/Users/katri/OneDrive/Documents/GitHub/DORM_Mutations/src")
 source("https://gist.githubusercontent.com/dchakro/8b1e97ba6853563dd0bb5b7be2317692/raw/parallelRDS.R")
 
-Stats <- readRDS.gz("C:/Users/katri/seadrive_root/Katri Va/Shared with me/DORM database/Data/CountStatsRAW.RDS")
+Stats <- readRDS.gz("C:/Users/katri/seadrive_root/Katri Va/Shared with me/DORM database/Data/COSMIC_v100/CountStatsRAW.RDS")
 rm(loadRDS,readRDS.gz,writeRDS,saveRDS.gz)
 
 sampleCount <- unique(Stats[,.(Sample.name,tissue)])[,.N,.(tissue)]
@@ -136,5 +136,5 @@ tissues <- unique(SampleDT$tissue)
 var <- parallel::mclapply(
     X = as.list(c("all",sort(tissues))),
     FUN = function(X) saveRDS(object = plot_bar(Tissue = X),file = paste0("../data/bar_with_others/", gsub(" ","_",X), ".RDS")),
-    mc.cores = parallel::detectCores()
+    mc.cores = 1
 )
