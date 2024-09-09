@@ -1,6 +1,5 @@
 library(data.table)
 rm(list=ls());gc()
-setwd("C:/Users/katri/OneDrive/Documents/GitHub/DORM_Mutations")
 
 # -- Create essential files (initial run)
 DF <- readRDS("./data/20240803.FrequencyByMutation.RDS")
