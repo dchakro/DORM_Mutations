@@ -7,7 +7,7 @@ library(ggplot2)
 #   system(command = "xz -kd ./data/Table.csv.xz",intern = F,wait = T)
 # }
 ColumnNames <- readLines("./data/ColumnNames.txt")
-sampleCount <- readRDS("data/sampleCountByCancerType.RDS")
+sampleCount <- readRDS("./data/sampleCountByCancerType.RDS")
 ## -- END --
 
 theme_bar_plot <- theme(axis.line = element_line(colour = "black",
