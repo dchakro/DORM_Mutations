@@ -76,7 +76,7 @@ plot_bar <- function(Tissue){
     ylab("Mutated in samples (%)") + 
     xlab("Proteins") +
     theme(axis.line = element_line(colour = "black",
-                                   size=0.5),
+                                   linewidth=0.5),
           panel.border = element_blank(),
           panel.background = element_blank(),
           panel.grid.major = element_blank(),
@@ -111,10 +111,10 @@ plot_bar <- function(Tissue){
 }
 
 # ----> Set up environment <-------
-setwd("C:/Users/katri/OneDrive/Documents/GitHub/DORM_Mutations/src")
+# setwd("C:/Users/katri/OneDrive/Documents/GitHub/DORM_Mutations/src")
 source("https://gist.githubusercontent.com/dchakro/8b1e97ba6853563dd0bb5b7be2317692/raw/parallelRDS.R")
 
-Stats <- readRDS.gz("C:/Users/katri/seadrive_root/Katri Va/Shared with me/DORM database/Data/COSMIC_v100/CountStatsRAW.RDS")
+Stats <- readRDS.gz("CountStatsRAW.RDS")
 rm(loadRDS,readRDS.gz,writeRDS,saveRDS.gz)
 
 sampleCount <- unique(Stats[,.(Sample.name,tissue)])[,.N,.(tissue)]

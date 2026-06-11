@@ -2,7 +2,8 @@ library(data.table)
 rm(list=ls());gc()
 
 # -- Create essential files (initial run)
-DF <- readRDS("./data/20240803.FrequencyByMutation.RDS")
+#DF <- readRDS("./data/20240803.FrequencyByMutation.RDS")
+DF <- readRDS("./data/20251206.FrequencyByMutation.RDS")
 DF <- DF[, replace(.SD, .SD == 0, NA)]
 DF[,Mutation:=gsub("X","Ter",Mutation)]
 
